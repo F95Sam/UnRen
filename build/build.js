@@ -51,7 +51,6 @@ gitClone({
 	url: 'https://github.com/F95Sam/unrpyc',
 	tmpGit: 'unrpyc',
 	callback: (commit, repoPath) => {
-		repoPath
 		let cabFolder = path.resolve(repoPath, 'decompiler/');
 		let filesPath = path.resolve(repoPath, 'files.txt');
 
