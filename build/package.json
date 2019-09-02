@@ -1,0 +1,10 @@
+{
+	"name": "unren-build",
+	"version": "0.1.0",
+	"description": "UnRen.bat Builder",
+	"main": "build.js",
+	"dependencies": {
+		"nodegit": "^0.25.1",
+		"fs-extra": "^8.1.0"
+	}
+}
