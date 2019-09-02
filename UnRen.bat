@@ -38,7 +38,7 @@ set rpatool5=dGUgZnVuY3Rpb24gdG8gcmVjdXJzaXZlbHkgcHJvY2VzcyBkaXJlY3Rvcmllcy4NCiA
 REM --------------------------------------------------------------------------------
 REM !! DO NOT EDIT BELOW THIS LINE !!
 REM --------------------------------------------------------------------------------
-set "version=0.7 (180818)"
+set "version=0.8-dev"
 title UnRen.bat v%version%
 :init
 REM --------------------------------------------------------------------------------
