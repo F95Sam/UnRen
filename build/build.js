@@ -11,14 +11,19 @@ const path = require('path');
 
 const gitClone = opts => {
 	let gitPath = path.resolve(tmpPath, opts.tmpGit);
+	let cloneOptions = new nodegit.CloneOptions();
+
+	if ('branch' in opts) {
+		cloneOptions.checkoutBranch = opts.branch; 
+	}
 
 	console.log('Removing "' + gitPath + '" ...');
 
 	fse.remove(gitPath).then(() => {
 		console.log('Cloning "' + opts.url + '" to "' + gitPath + '" ...');
 
-		nodegit.Clone(opts.url, gitPath).then(repo => {
-			return repo.getMasterCommit();
+		nodegit.Clone(opts.url, gitPath, cloneOptions).then(repo => {
+			return repo.getHeadCommit();
 		})
 		.done(commit => {
 			opts.callback(commit, gitPath);
@@ -50,6 +55,7 @@ let unrenSrc = fse.readFileSync(unrenPath, 'utf8');
 gitClone({
 	url: 'https://github.com/F95Sam/unrpyc',
 	tmpGit: 'unrpyc',
+//	branch: 'tag_bypass',
 	callback: (commit, repoPath) => {
 		let cabFolder = path.resolve(repoPath, 'decompiler/');
 		let filesPath = path.resolve(repoPath, 'files.txt');
