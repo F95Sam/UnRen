@@ -30,7 +30,7 @@ REM multiple variables, and joined later using powershell.
 REM --------------------------------------------------------------------------------
 REM unrpyc by CensoredUsername
 REM   https://github.com/CensoredUsername/unrpyc
-REM Edited to remove multiprocessing and adjust output spacing 44febb0 2019-10-07T07:06:47.000Z
+REM Edited to remove multiprocessing and adjust output spacing [UNRPYC//SHA] [UNRPYC//DATE]
 REM   https://github.com/F95Sam/unrpyc
 REM --------------------------------------------------------------------------------
 REM set unrpyccab01=
@@ -161,7 +161,7 @@ REM Check if rpatool is there.
 REM --------------------------------------------------------------------------------
 if not exist "%rpatool%" (
 	echo    ! Error: "rpatool" is missing. Please check if UnRen and
-	echo             Powershell is in working order.
+	echo             Powershell are in working order.
 	echo.
 	pause>nul|set/p=.            Press any key to exit...
 	exit
