@@ -4,14 +4,15 @@ title UnRen.bat Error
 echo.
 echo   Error!
 echo.
-echo   This is the development version of UnRen. This is non functional and not intended to be used by end users.
+echo   This is the development version of UnRen. This is non functional and not
+echo   intended to be used by end users.
 echo   Please use the release version instead, found in the F95zone thread:
 echo.
 echo   https://f95zone.to/threads/unren-bat-rpa-extractor-rpyc-decompiler-console-developer-menu-enabler.3083/
 echo.
 pause>nul|set/p=.  Press any key to exit...
 echo.
-pause 
+pause
 exit
 REM DEV//WARN_END]
 REM --------------------------------------------------------------------------------
@@ -29,7 +30,7 @@ REM multiple variables, and joined later using powershell.
 REM --------------------------------------------------------------------------------
 REM unrpyc by CensoredUsername
 REM   https://github.com/CensoredUsername/unrpyc
-REM Edited to remove multiprocessing and adjust output spacing [UNRPYC//SHA] [UNRPYC//DATE]
+REM Edited to remove multiprocessing and adjust output spacing 44febb0 2019-10-07T07:06:47.000Z
 REM   https://github.com/F95Sam/unrpyc
 REM --------------------------------------------------------------------------------
 REM set unrpyccab01=
@@ -43,7 +44,7 @@ REM set rpatool01=
 REM --------------------------------------------------------------------------------
 REM !! DO NOT EDIT BELOW THIS LINE !!
 REM --------------------------------------------------------------------------------
-set "version=0.9-dev ([DEV//BUILD_DATE])"
+set "version=0.10.0-dev ([DEV//BUILD_DATE])"
 title UnRen.bat v%version%
 :init
 REM --------------------------------------------------------------------------------
@@ -62,19 +63,7 @@ echo  ----------------------------------------------------
 echo.
 
 REM --------------------------------------------------------------------------------
-REM We need powershell for later, make sure it exists
-REM --------------------------------------------------------------------------------
-if not exist "%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe" (
-	echo    ! Error: Powershell is required, unable to continue.
-	echo             This is included in Windows 7, 8, 10. XP/Vista users can
-	echo             download it here: http://support.microsoft.com/kb/968929
-	echo.
-	pause>nul|set/p=.            Press any key to exit...
-	exit
-)
-
-REM --------------------------------------------------------------------------------
-REM Set our paths, and make sure we can find python exe
+REM Set up the work paths and assert script, python and powershell location
 REM --------------------------------------------------------------------------------
 set "currentdir=%~dp0%"
 set "pythondir=%currentdir%..\lib\windows-i686\"
@@ -84,11 +73,33 @@ if exist "game" if exist "lib" if exist "renpy" (
 	set "pythondir=%currentdir%lib\windows-i686\"
 	set "renpydir=%currentdir%renpy\"
 	set "gamedir=%currentdir%game\"
+) else if exist "..\game" if exist "..\lib" if exist "..\renpy" (
+	echo    ! Error: The location of UnRen is in the "game" directory. It must be moved
+	echo             above(!) the current location.
+	echo.
+	pause>nul|set/p=.            Press any key to exit...
+	exit
+) else (
+	echo    ! Error: Looks like UnRen is not located in the correct directory.
+	echo             The directorys "game", "lib" and "renpy" must be present
+	echo             beside this file. Correct and try again.
+	echo.
+	pause>nul|set/p=.            Press any key to exit...
+	exit
 )
 
 if not exist "%pythondir%python.exe" (
 	echo    ! Error: Cannot locate python.exe, unable to continue.
 	echo             Are you sure we're in the game's root directory?
+	echo.
+	pause>nul|set/p=.            Press any key to exit...
+	exit
+)
+
+if not exist "%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe" (
+	echo    ! Error: Powershell is required, unable to continue.
+	echo             This is included in Windows 7, 8, 10. XP/Vista users can
+	echo             download it here: http://support.microsoft.com/kb/968929
 	echo.
 	pause>nul|set/p=.            Press any key to exit...
 	exit
@@ -109,7 +120,7 @@ echo     6) Force enable rollback (scroll wheel)
 echo.
 echo     9) All of the above
 echo.
-set /p option=.  Enter a number: 
+set /p option=.  Enter a number:
 echo.
 echo  ----------------------------------------------------
 echo.
@@ -146,12 +157,23 @@ powershell.exe -nologo -noprofile -noninteractive -command "& { [IO.File]::Write
 echo.
 
 REM --------------------------------------------------------------------------------
+REM Check if rpatool is there.
+REM --------------------------------------------------------------------------------
+if not exist "%rpatool%" (
+	echo    ! Error: "rpatool" is missing. Please check if UnRen and
+	echo             Powershell is in working order.
+	echo.
+	pause>nul|set/p=.            Press any key to exit...
+	exit
+)
+
+REM --------------------------------------------------------------------------------
 REM Unpack RPA
 REM --------------------------------------------------------------------------------
 echo   Searching for RPA packages
 cd "%gamedir%"
 set "PYTHONPATH=%pythondir%Lib"
-for %%f in (*.rpa) do (
+for %%f in (*.rpa *.rpi) do (
 	echo    + Unpacking "%%~nf%%~xf" - %%~zf bytes
 	"%pythondir%python.exe" -O "%rpatool%" -x "%%f"
 )
@@ -206,6 +228,17 @@ echo   Extracting _unrpyc.cab...
 mkdir "%decompilerdir%"
 expand -F:* "%unrpyccab%" "%decompilerdir%" >nul
 move "%decompilerdir%\unrpyc.py" "%unrpycpy%" >nul
+
+REM --------------------------------------------------------------------------------
+REM Check if unrpyc is there
+REM --------------------------------------------------------------------------------
+if not exist "%unrpycpy%" (
+	echo    ! Error: "unrpyc" is missing. Please check if UnRen and Powershell
+	echo             are in working order.
+	echo.
+	pause>nul|set/p=.            Press any key to exit...
+	exit
+)
 
 REM --------------------------------------------------------------------------------
 REM Decompile rpyc files
@@ -346,7 +379,7 @@ echo.
 echo    Finished!
 echo.
 echo    Enter "1" to go back to the menu, or any other
-set /p exitoption=.   key to exit: 
+set /p exitoption=.   key to exit:
 echo.
 echo  ----------------------------------------------------
 echo.
