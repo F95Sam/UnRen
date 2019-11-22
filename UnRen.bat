@@ -65,17 +65,19 @@ echo.
 REM --------------------------------------------------------------------------------
 REM Set up the work paths and assert script, python and powershell location
 REM --------------------------------------------------------------------------------
+set "error=0"
 set "currentdir=%~dp0%"
 set "pythondir=%currentdir%..\lib\windows-i686\"
 set "renpydir=%currentdir%..\renpy\"
 set "gamedir=%currentdir%"
+
 if exist "game" if exist "lib" if exist "renpy" (
 	set "pythondir=%currentdir%lib\windows-i686\"
 	set "renpydir=%currentdir%renpy\"
 	set "gamedir=%currentdir%game\"
 ) else if exist "..\game" if exist "..\lib" if exist "..\renpy" (
 	echo    ! Error: The location of UnRen is in the "game" directory. It must be moved
-	echo             above(!) the current location.
+	echo             above the current location.
 	echo.
 	pause>nul|set/p=.            Press any key to exit...
 	exit
@@ -105,10 +107,10 @@ if not exist "%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe" (
 	exit
 )
 
-:menu
 REM --------------------------------------------------------------------------------
 REM Menu selection
 REM --------------------------------------------------------------------------------
+:menu
 set exitoption=
 echo   Available Options:
 echo     1) Extract RPA packages
@@ -133,10 +135,10 @@ if "%option%"=="6" goto rollback
 if "%option%"=="9" goto extract
 goto init
 
-:extract
 REM --------------------------------------------------------------------------------
 REM Write _rpatool.py from our base64 strings
 REM --------------------------------------------------------------------------------
+:extract
 set "rpatool=%currentdir%_rpatool.py"
 echo   Creating rpatool...
 if exist "%rpatool%.tmp" (
@@ -164,7 +166,7 @@ if not exist "%rpatool%" (
 	echo             Powershell are in working order.
 	echo.
 	pause>nul|set/p=.            Press any key to exit...
-	exit
+	set "error=1" & goto :rpatool_cleanup
 )
 
 REM --------------------------------------------------------------------------------
@@ -182,18 +184,22 @@ echo.
 REM --------------------------------------------------------------------------------
 REM Clean up
 REM --------------------------------------------------------------------------------
+:rpatool_cleanup
 echo   Cleaning up temporary files...
 del "%rpatool%.tmp"
 del "%rpatool%"
 echo.
+if not "%error%" == "0" (
+	goto :badfinish
+)
 if not "%option%" == "9" (
-	goto finish
+	goto :finish
 )
 
-:decompile
 REM --------------------------------------------------------------------------------
 REM Write to temporary file first, then convert. Needed due to binary file
 REM --------------------------------------------------------------------------------
+:decompile
 set "unrpyccab=%gamedir%..\_unrpyc.cab"
 set "decompilerdir=%gamedir%..\decompiler"
 set "unrpycpy=%gamedir%..\unrpyc.py"
@@ -237,7 +243,7 @@ if not exist "%unrpycpy%" (
 	echo             are in working order.
 	echo.
 	pause>nul|set/p=.            Press any key to exit...
-	exit
+	set "error=1" & goto :unrpyc_cleanup
 )
 
 REM --------------------------------------------------------------------------------
@@ -257,14 +263,18 @@ echo.
 REM --------------------------------------------------------------------------------
 REM Clean up
 REM --------------------------------------------------------------------------------
+:unrpyc_cleanup
 echo   Cleaning up temporary files...
 del "%unrpyccab%.tmp"
 del "%unrpyccab%"
 del "%unrpycpy%"
 rmdir /Q /S "%decompilerdir%"
 echo.
+if not "%error%" == "0" (
+	goto :badfinish
+)
 if not "%option%" == "9" (
-	goto finish
+	goto :finish
 )
 
 :console
@@ -285,7 +295,6 @@ echo    + Console: SHIFT+O
 echo    + Dev Menu: SHIFT+D
 echo.
 
-:consoleend
 if not "%option%" == "9" (
 	goto finish
 )
@@ -366,14 +375,10 @@ echo     pass>> "%rollbackfile%"
 echo    + You can now rollback using the scrollwheel
 echo.
 
-if not "%option%" == "9" (
-	goto finish
-)
-
-:finish
 REM --------------------------------------------------------------------------------
 REM We are done
 REM --------------------------------------------------------------------------------
+:finish
 echo  ----------------------------------------------------
 echo.
 echo    Finished!
@@ -385,3 +390,12 @@ echo  ----------------------------------------------------
 echo.
 if "%exitoption%"=="1" goto menu
 exit
+
+REM --------------------------------------------------------------------------------
+REM Bad end
+REM --------------------------------------------------------------------------------
+:badfinish
+echo.
+echo    Terminated because a error occured!
+echo.
+sleep 1 & exit
