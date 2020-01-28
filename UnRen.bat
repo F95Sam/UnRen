@@ -154,7 +154,7 @@ set "rpatoolps=%rpatool:[=`[%"
 set "rpatoolps=%rpatoolps:]=`]%"
 set "rpatoolps=%rpatoolps:^=^^%"
 set "rpatoolps=%rpatoolps:&=^&%"
-powershell.exe -nologo -noprofile -noninteractive -command "& { [IO.File]REMWriteAllBytes(\"%rpatoolps%\", [Convert]REMFromBase64String([IO.File]REMReadAllText(\"%rpatoolps%.tmp\"))) }"
+powershell.exe -nologo -noprofile -noninteractive -command "& { [IO.File]::WriteAllBytes(\"%rpatoolps%\", [Convert]::FromBase64String([IO.File]::ReadAllText(\"%rpatoolps%.tmp\"))) }"
 
 REM --------------------------------------------------------------------------------
 REM Check if rpatool is there.
@@ -172,7 +172,7 @@ REM ----------------------------------------------------------------------------
 echo/
 echo   Searching for RPA packages
 cd "%gamedir%"
-for %%f in (*.rpa *.rpi *.rpc) do (
+for %%f in (*.rpa) do (
 	echo    + Unpacking "%%~nf%%~xf" - %%~zf bytes
 	"%pythondir%python.exe" -O "%rpatool%" -x "%%f"
 )
@@ -218,7 +218,7 @@ set "unrpyccabps=%unrpyccab:[=`[%"
 set "unrpyccabps=%unrpyccabps:]=`]%"
 set "unrpyccabps=%unrpyccabps:^=^^%"
 set "unrpyccabps=%unrpyccabps:&=^&%"
-powershell.exe -nologo -noprofile -noninteractive -command "& { [IO.File]REMWriteAllBytes(\"%unrpyccabps%\", [Convert]REMFromBase64String([IO.File]REMReadAllText(\"%unrpyccabps%.tmp\"))) }"
+powershell.exe -nologo -noprofile -noninteractive -command "& { [IO.File]::WriteAllBytes(\"%unrpyccabps%\", [Convert]::FromBase64String([IO.File]::ReadAllText(\"%unrpyccabps%.tmp\"))) }"
 
 REM --------------------------------------------------------------------------------
 REM Once converted, extract the cab file. Needs to be a cab file due to expand.exe
