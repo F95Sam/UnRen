@@ -1,5 +1,5 @@
 @echo off
-:: [DEV//WARN_START
+REM [DEV//WARN_START
 title UnRen.bat Error
 echo/
 echo   Error!
@@ -14,42 +14,42 @@ pause>nul|set/p=.  Press any key to exit...
 echo/
 pause
 exit
-:: DEV//WARN_END]
-:: --------------------------------------------------------------------------------
-:: Configuration:
-::   Set a Quick Save and Quick Load hotkey - http://www.pygame.org/docs/ref/key.html
-:: --------------------------------------------------------------------------------
+REM DEV//WARN_END]
+REM --------------------------------------------------------------------------------
+REM Configuration:
+REM   Set a Quick Save and Quick Load hotkey - http://www.pygame.org/docs/ref/key.html
+REM --------------------------------------------------------------------------------
 set "quicksavekey=K_F5"
 set "quickloadkey=K_F9"
-:: --------------------------------------------------------------------------------
-:: !! END CONFIG !!
-:: --------------------------------------------------------------------------------
-:: The following variables are Base64 encoded strings for unrpyc and rpatool
-:: Due to batch limitations on variable lengths, they need to be split into
-:: multiple variables, and joined later using powershell.
-:: --------------------------------------------------------------------------------
-:: unrpyc by CensoredUsername
-::   https://github.com/CensoredUsername/unrpyc
-:: Edited to ::ove multiprocessing and adjust output spacing [UNRPYC//SHA] [UNRPYC//DATE]
-::   https://github.com/F95Sam/unrpyc
-:: --------------------------------------------------------------------------------
-:: set unrpyccab01=
+REM --------------------------------------------------------------------------------
+REM !! END CONFIG !!
+REM --------------------------------------------------------------------------------
+REM The following variables are Base64 encoded strings for unrpyc and rpatool
+REM Due to batch limitations on variable lengths, they need to be split into
+REM multiple variables, and joined later using powershell.
+REM --------------------------------------------------------------------------------
+REM unrpyc by CensoredUsername
+REM   https://github.com/CensoredUsername/unrpyc
+REM Edited to remove multiprocessing and adjust output spacing [UNRPYC//SHA] [UNRPYC//DATE]
+REM   https://github.com/F95Sam/unrpyc
+REM --------------------------------------------------------------------------------
+REM set unrpyccab01=
 [UNRPYC//BASE]
-:: --------------------------------------------------------------------------------
-:: rpatool by Shizmob [RPATOOL//SHA] [RPATOOL//DATE]
-::   https://github.com/Shizmob/rpatool
-:: --------------------------------------------------------------------------------
-:: set rpatool01=
+REM --------------------------------------------------------------------------------
+REM rpatool by Shizmob [RPATOOL//SHA] [RPATOOL//DATE]
+REM   https://github.com/Shizmob/rpatool
+REM --------------------------------------------------------------------------------
+REM set rpatool01=
 [RPATOOL//BASE]
-:: --------------------------------------------------------------------------------
-:: !! DO NOT EDIT BELOW THIS LINE !!
-:: --------------------------------------------------------------------------------
-set "version=0.11.0-dev ([DEV//BUILD_DATE])"
+REM --------------------------------------------------------------------------------
+REM !! DO NOT EDIT BELOW THIS LINE !!
+REM --------------------------------------------------------------------------------
+set "version=0.9.0-dev ([DEV//BUILD_DATE])"
 title UnRen.bat v%version%
 :init
-:: --------------------------------------------------------------------------------
-:: Splash screen
-:: --------------------------------------------------------------------------------
+REM --------------------------------------------------------------------------------
+REM Splash screen
+REM --------------------------------------------------------------------------------
 cls
 echo/
 echo     __  __      ____               __          __
@@ -62,10 +62,10 @@ echo/
 echo  ----------------------------------------------------
 echo/
 
-:: --------------------------------------------------------------------------------
-:: Set up the work paths and assert script, python and powershell location
-:: Note: 'if/else/else if' would be nice, but make just problems in batch
-:: --------------------------------------------------------------------------------
+REM --------------------------------------------------------------------------------
+REM Set up the work paths and assert script, python and powershell location
+REM Note: 'if/else/else if' would be nice, but make just problems in batch
+REM --------------------------------------------------------------------------------
 set err=0
 set err_msg="Unknown reason..."
 set currentdir=%~dp0
@@ -106,9 +106,9 @@ if not exist "%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe" (
 	goto :error
 )
 
-:: --------------------------------------------------------------------------------
-:: Menu selection
-:: --------------------------------------------------------------------------------
+REM --------------------------------------------------------------------------------
+REM Menu selection
+REM --------------------------------------------------------------------------------
 :menu
 set exitoption=
 echo   Available Options:
@@ -121,7 +121,7 @@ echo     6) Force enable rollback (scroll wheel)
 echo/
 echo     9) All of the above
 echo/
-set /p option=.  Enter a number:
+set /p option=.  Enter a number: 
 echo/
 echo  ----------------------------------------------------
 echo/
@@ -134,9 +134,9 @@ if "%option%"=="6" goto :rollback
 if "%option%"=="9" goto :extract
 goto :init
 
-:: --------------------------------------------------------------------------------
-:: Write _rpatool.py from our base64 strings
-:: --------------------------------------------------------------------------------
+REM --------------------------------------------------------------------------------
+REM Write _rpatool.py from our base64 strings
+REM --------------------------------------------------------------------------------
 :extract
 set "rpatool=%currentdir%_rpatool.py"
 echo/
@@ -148,17 +148,17 @@ if exist "%rpatool%" (
 	del "%rpatool%"
 )
 
-:: echo %rpatool%>> "%rpatool%.tmp"
+REM echo %rpatool%>> "%rpatool%.tmp"
 [RPATOOL//MERGE]
 set "rpatoolps=%rpatool:[=`[%"
 set "rpatoolps=%rpatoolps:]=`]%"
 set "rpatoolps=%rpatoolps:^=^^%"
 set "rpatoolps=%rpatoolps:&=^&%"
-powershell.exe -nologo -noprofile -noninteractive -command "& { [IO.File]::WriteAllBytes(\"%rpatoolps%\", [Convert]::FromBase64String([IO.File]::ReadAllText(\"%rpatoolps%.tmp\"))) }"
+powershell.exe -nologo -noprofile -noninteractive -command "& { [IO.File]REMWriteAllBytes(\"%rpatoolps%\", [Convert]REMFromBase64String([IO.File]REMReadAllText(\"%rpatoolps%.tmp\"))) }"
 
-:: --------------------------------------------------------------------------------
-:: Check if rpatool is there.
-:: --------------------------------------------------------------------------------
+REM --------------------------------------------------------------------------------
+REM Check if rpatool is there.
+REM --------------------------------------------------------------------------------
 if not exist "%rpatool%" (
 	echo    ! Error: 'rpatool' is missing. Please check if UnRen and Powershell
 	echo             are working correctly.
@@ -166,9 +166,9 @@ if not exist "%rpatool%" (
 	set err=1 & goto :rpatool_cleanup
 )
 
-:: --------------------------------------------------------------------------------
-:: Unpack RPA
-:: --------------------------------------------------------------------------------
+REM --------------------------------------------------------------------------------
+REM Unpack RPA
+REM --------------------------------------------------------------------------------
 echo/
 echo   Searching for RPA packages
 cd "%gamedir%"
@@ -177,9 +177,9 @@ for %%f in (*.rpa *.rpi *.rpc) do (
 	"%pythondir%python.exe" -O "%rpatool%" -x "%%f"
 )
 
-:: --------------------------------------------------------------------------------
-:: Clean up
-:: --------------------------------------------------------------------------------
+REM --------------------------------------------------------------------------------
+REM Clean up
+REM --------------------------------------------------------------------------------
 :rpatool_cleanup
 echo/
 echo   Cleaning up temporary files...
@@ -190,9 +190,9 @@ echo/
 if not %err% == 0 goto :error
 if not "%option%" == "9" goto :finish
 
-:: --------------------------------------------------------------------------------
-:: Write to temporary file first, then convert. Needed due to binary file
-:: --------------------------------------------------------------------------------
+REM --------------------------------------------------------------------------------
+REM Write to temporary file first, then convert. Needed due to binary file
+REM --------------------------------------------------------------------------------
 :decompile
 set "unrpyccab=%gamedir%..\_unrpyc.cab"
 set "decompilerdir=%gamedir%..\decompiler"
@@ -212,26 +212,26 @@ if exist "%decompilerdir%" (
 	rmdir /Q /S "%decompilerdir%"
 )
 
-:: echo %unrpyccab%>> "%unrpyccab%.tmp"
+REM echo %unrpyccab%>> "%unrpyccab%.tmp"
 [UNRPYC//MERGE]
 set "unrpyccabps=%unrpyccab:[=`[%"
 set "unrpyccabps=%unrpyccabps:]=`]%"
 set "unrpyccabps=%unrpyccabps:^=^^%"
 set "unrpyccabps=%unrpyccabps:&=^&%"
-powershell.exe -nologo -noprofile -noninteractive -command "& { [IO.File]::WriteAllBytes(\"%unrpyccabps%\", [Convert]::FromBase64String([IO.File]::ReadAllText(\"%unrpyccabps%.tmp\"))) }"
+powershell.exe -nologo -noprofile -noninteractive -command "& { [IO.File]REMWriteAllBytes(\"%unrpyccabps%\", [Convert]REMFromBase64String([IO.File]REMReadAllText(\"%unrpyccabps%.tmp\"))) }"
 
-:: --------------------------------------------------------------------------------
-:: Once converted, extract the cab file. Needs to be a cab file due to expand.exe
-:: --------------------------------------------------------------------------------
+REM --------------------------------------------------------------------------------
+REM Once converted, extract the cab file. Needs to be a cab file due to expand.exe
+REM --------------------------------------------------------------------------------
 echo/
 echo   Extracting _unrpyc.cab...
 mkdir "%decompilerdir%"
 expand -F:* "%unrpyccab%" "%decompilerdir%" >nul
 move "%decompilerdir%\unrpyc.py" "%unrpycpy%" >nul
 
-:: --------------------------------------------------------------------------------
-:: Check if unrpyc is there
-:: --------------------------------------------------------------------------------
+REM --------------------------------------------------------------------------------
+REM Check if unrpyc is there
+REM --------------------------------------------------------------------------------
 if not exist "%unrpycpy%" (
 	echo    ! Error: 'unrpyc' is missing. Please check if UnRen and Powershell
 	echo              are working correctly.
@@ -239,9 +239,9 @@ if not exist "%unrpycpy%" (
 	set err=1 & goto :unrpyc_cleanup
 )
 
-:: --------------------------------------------------------------------------------
-:: Decompile rpyc files
-:: --------------------------------------------------------------------------------
+REM --------------------------------------------------------------------------------
+REM Decompile rpyc files
+REM --------------------------------------------------------------------------------
 echo/
 echo   Searching for rpyc files...
 cd "%gamedir%"
@@ -252,9 +252,9 @@ for /r %%f in (*.rpyc) do (
 	)
 )
 
-:: --------------------------------------------------------------------------------
-:: Clean up
-:: --------------------------------------------------------------------------------
+REM --------------------------------------------------------------------------------
+REM Clean up
+REM --------------------------------------------------------------------------------
 :unrpyc_cleanup
 echo/
 echo   Cleaning up temporary files...
@@ -267,9 +267,9 @@ if not %err% == 0 goto :error
 if not "%option%" == "9" goto :finish
 
 :console
-:: --------------------------------------------------------------------------------
-:: Drop our console/dev mode enabler into the game folder
-:: --------------------------------------------------------------------------------
+REM --------------------------------------------------------------------------------
+REM Drop our console/dev mode enabler into the game folder
+REM --------------------------------------------------------------------------------
 echo/
 echo   Creating Developer/Console file...
 set "consolefile=%gamedir%unren-dev.rpy"
@@ -287,9 +287,9 @@ echo    + Dev Menu: SHIFT+D
 if not "%option%" == "9" goto :finish
 
 
-:: --------------------------------------------------------------------------------
-:: Drop our Quick Save/Load file into the game folder
-:: --------------------------------------------------------------------------------
+REM --------------------------------------------------------------------------------
+REM Drop our Quick Save/Load file into the game folder
+REM --------------------------------------------------------------------------------
 :quick
 echo/
 echo   Creating Quick Save/Quick Load file...
@@ -313,9 +313,9 @@ echo    + Quick Load: F9
 
 if not "%option%" == "9" goto :finish
 
-:: --------------------------------------------------------------------------------
-:: Drop our skip file into the game folder
-:: --------------------------------------------------------------------------------
+REM --------------------------------------------------------------------------------
+REM Drop our skip file into the game folder
+REM --------------------------------------------------------------------------------
 :skip
 echo/
 echo   Creating skip file...
@@ -334,9 +334,9 @@ echo    + You can now skip all text using TAB and CTRL keys
 
 if not "%option%" == "9" goto :finish
 
-:: --------------------------------------------------------------------------------
-:: Drop our rollback file into the game folder
-:: --------------------------------------------------------------------------------
+REM --------------------------------------------------------------------------------
+REM Drop our rollback file into the game folder
+REM --------------------------------------------------------------------------------
 :rollback
 echo/
 echo   Creating rollback file...
@@ -359,25 +359,25 @@ echo     pass>> "%rollbackfile%"
 
 echo    + You can now rollback using the scrollwheel
 
-:: --------------------------------------------------------------------------------
-:: We are done
-:: --------------------------------------------------------------------------------
+REM --------------------------------------------------------------------------------
+REM We are done
+REM --------------------------------------------------------------------------------
 :finish
 echo  ----------------------------------------------------
 echo/
 echo    Finished!
 echo/
 echo    Enter "1" to go back to the menu, or any other
-set /p exitoption=.   key to exit:
+set /p exitoption=.   key to exit: 
 echo/
 echo  ----------------------------------------------------
 
 if "%exitoption%"=="1" goto menu
-exit 1
+exit 0
 
-:: --------------------------------------------------------------------------------
-:: Bad end
-:: --------------------------------------------------------------------------------
+REM --------------------------------------------------------------------------------
+REM Bad end
+REM --------------------------------------------------------------------------------
 :error
 echo/
 echo    Terminating.
