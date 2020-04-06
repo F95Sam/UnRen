@@ -12,9 +12,20 @@ diverse RenPy functions through script commands.
 
 import os
 import sys
-from pathlib import Path as pt
+# NOTE: Needs the backported package pathlib2 installed
+# win: python -m pip install pathlib2
+# unix: python pip install pathlib2
+# mac: sudo easy_install pip pip install pathlib2 (?)
+from pathlib2 import Path as pt
 import textwrap
 import argparse
+import tempfile
+import pickle
+import base64
+
+
+# NOTE: py3.6 f-strings are not available in py2
+# code from py3 script will need rework with the old % and .format styles
 
 
  # Subject to change
@@ -31,4 +42,4 @@ __version__ = '0.1.0-alpha'
 
 if __name__ == '__main__':
     if not sys.version_info >= (2, 7):
-        raise f"Must be executed in Python 3.6 or later. You are running {sys.version}"
+        raise f"Must be executed in Python 2.7.x but not 3.x or later. You are running {sys.version}"
