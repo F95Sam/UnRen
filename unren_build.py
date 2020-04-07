@@ -41,14 +41,14 @@ def embed_stream(target_s, pack_stream):
         ofi.write(data.replace(b"_placeholder", pack_stream))
 
 
-def tools_packer(tools_p, pth_lst):
+def tools_packer(tools_pth, pth_lst):
     """Packs the tools to a pickled and encoded stream."""
     store = {}
     for f_item in pth_lst:
         with pt(f_item).open('rb') as ofi:
             d_chunk = ofi.read()
 
-        rel_fp = pt(f_item).relative_to(tools_p)
+        rel_fp = pt(f_item).relative_to(tools_pth)
         store[str(rel_fp)] = d_chunk
 
     # NOTE: To reduce size of output a compressor(zlib, lzma...) can be used in the middel of pickle and the encoder; Not at the end - isn't py code safe
@@ -56,10 +56,10 @@ def tools_packer(tools_p, pth_lst):
     return stream
 
 
-def path_walker(tools_p):
+def path_walker(tools_pth):
     """Walks the tools directory and collects a list of py files."""
     tool_lst = []
-    for fpath, _subdirs, files in os.walk(tools_p):
+    for fpath, _subdirs, files in os.walk(tools_pth):
         for fln in files:
             if pt(fln).suffix in ['.py', '.pyc']:
                 tool_lst.append(pt(fpath).joinpath(fln))
@@ -68,20 +68,25 @@ def path_walker(tools_p):
 
 def ur_main():
     """This executes all program steps."""
-    # QUESTION: I think paths should be fixed in the end; no need for cli parsing
+    # QUESTION: I think paths could be fixed; eleminates cli parsing but rigide
 
     # hm... do we better use a absolute path
-    # tools_p = pt('/home/olli/Code/tst/ur_tools')
+    # tools_pth = pt('/home/olli/Code/tst/ur_tools')
     # or relative in a fixed dir struct
-    tools_p = pt('ur_tools')
-    # target script
-    target_scr = 'ur_tester.py'
+    tools_pth = pt('ur_tools')
+    if len(sys.argv) > 1:
+        target_scr = sys.argv[1]
+    else:
+        target_scr = "ur_tester.py"
+        # target_scr = "unren_py3.6.py"
+        # print("Target path missing. \
+        # Use: python3 unren_build.py '/path/to/target/script.py'")
 
-    packlist = path_walker(tools_p)
-    stream = tools_packer(tools_p, packlist)
+    packlist = path_walker(tools_pth)
+    stream = tools_packer(tools_pth, packlist)
     embed_stream(target_scr, stream)
 
-    print("\n>> Task completed!\n")
+    print("\nUnRen streambuilder:>> Task completed!\n")
 
 
 if __name__ == '__main__':
