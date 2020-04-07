@@ -5,21 +5,22 @@
 
 REM read from central location
 set /p version=<version.txt
-title UnRen.bat v%version%
+title "UnRen for Windows v%version%"
 
 
 REM path check part 1
 REM --------------------------------------------------------------------------------
+:path_check
 REM lets assume the ideal (script sits in the games base dir)
 set base_pth=%~dp0
 
 if exist "game" if exist "lib" if exist "renpy" (
-	goto :path_ok
+	goto :path_check_2
 )
 REM or if one below we shorten the path
 if exist "..\game" if exist "..\lib" if exist "..\renpy" (
     for %%X in ("%base_pth:~0,-1%") do set base_pth=%%~dpX
-	goto :path_ok
+	goto :path_check_2
 )
 
 echo    ! Error: The location of UnRen appears to be wrong. It should
@@ -31,7 +32,7 @@ goto :error
 
 REM path check part 2
 REM --------------------------------------------------------------------------------
-:path_ok
+:path_check_2
 set "game_pth=%base_pth%game\"
 set "python_pth=%base_pth%lib\windows-i686\"
 set "renpy_pth=%base_pth%renpy\"
