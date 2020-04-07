@@ -12,28 +12,32 @@ diverse RenPy functions through script commands.
 
 import os
 import sys
+import argparse
+import tempfile
+import pickle
+import base64
+import textwrap
+
 # NOTE: Needs the backported package pathlib2 installed
 # win: python -m pip install pathlib2
 # unix: python pip install pathlib2
 # mac: sudo easy_install pip pip install pathlib2 (?)
 from pathlib2 import Path as pt
-import textwrap
-import argparse
-import tempfile
-import pickle
-import base64
 
 
 # NOTE: py3.6 f-strings are not available in py2
 # code from py3 script will need rework with the old % and .format styles
 
 
- # Subject to change
+ # Subject to change; thats experimental
+with open("version.txt", 'r') as ofi:
+    VER_TXT = ofi.readline().strip()
+
 __title__ = 'UnRen'
 __license__ = 'Apache-2'
 __author__ = 'F95sam, madeddy'
 __status__ = 'Development'
-__version__ = '0.1.0-alpha'
+__version__ = VER_TXT
 
 
 # TODO: Placeholder: On completition of the python 3 version the code needs to be
