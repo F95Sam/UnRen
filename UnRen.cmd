@@ -15,12 +15,12 @@ REM lets assume the ideal (script sits in the games base dir)
 set base_pth=%~dp0
 
 if exist "game" if exist "lib" if exist "renpy" (
-	goto :path_check_2
+	goto :py_check
 )
 REM or if one below we shorten the path
 if exist "..\game" if exist "..\lib" if exist "..\renpy" (
     for %%X in ("%base_pth:~0,-1%") do set base_pth=%%~dpX
-	goto :path_check_2
+	goto :py_check
 )
 
 echo    ! Error: The location of UnRen appears to be wrong. It should
@@ -32,10 +32,14 @@ goto :error
 
 REM path check part 2
 REM --------------------------------------------------------------------------------
-:path_check_2
-set "game_pth=%base_pth%game\"
+:py_check
 set "python_pth=%base_pth%lib\windows-i686\"
-set "renpy_pth=%base_pth%renpy\"
+REM Future: On Renpy py3 we will have 64bit support for win
+REM if "%PROCESSOR_ARCHITECTURE%" EQU "AMD64" (
+REM     set "python_pth=%base_pth%lib\windows-x86-64\"
+REM ) else (
+REM     set "python_pth=%base_pth%lib\windows-i686\"
+REM )
 
 if not exist "%python_pth%python.exe" (
 	echo    ! Error: Cannot locate python.exe, unable to continue.
