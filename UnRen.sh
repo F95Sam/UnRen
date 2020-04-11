@@ -1,19 +1,20 @@
 #!/bin/bash
-
+# # Rather dumb to exec this as shell and then py, if we can do direct py
 
 # read from central location
 version=$(<version.txt)
 title="UnRen for Linux v$version"
+# should there to read "...and Mac"
 
 
 path_check() {
     base_pth=$(cd `dirname $0` && pwd)
 
     if [ -d "game" ] && [ -d "lib" ] && [ -d "renpy" ]; then
-        path_check2
+        py_check
     elif [ -d "../game" ] && [ -d "../lib" ] && [ -d "../renpy" ]; then
         base_pth=$(cd `dirname $base_pth` && pwd)
-        path_check2
+        py_check
     else
         echo "Error: The location of UnRen appears to be wrong. It should
               be in the game's base directory.
@@ -23,7 +24,7 @@ path_check() {
 }
 
 
-path_check2() {
+py_check() {
     os_arch=$(uname -m)
     
     if [ *"x64"* in $os_arch ]; then
@@ -34,8 +35,6 @@ path_check2() {
         echo "Could not identify OS architecture to set python." 
         error
     fi
-    game_pth=$base_pth"/game"
-    renpy_pth=$base_pth"/renpy"
 
     if [ -f $python_pth"/python" ]; then
         echo "python found"
@@ -69,6 +68,7 @@ error() {
     echo "Terminating."
     exit 1
 }
+
 
 path_check
 run_py
