@@ -1,5 +1,8 @@
+1>2# : ^
+"""
 @echo off
-
+echo Here is much space for endless speeches
+echo Or not...
 
 
 
@@ -8,7 +11,7 @@ set /p version=<version.txt
 title "UnRen for Windows v%version%"
 
 
-REM path check part 1
+REM path check
 REM --------------------------------------------------------------------------------
 :path_check
 REM lets assume the ideal (script sits in the games base dir)
@@ -30,10 +33,10 @@ echo/
 goto :error
 
 
-REM path check part 2
+REM py check
 REM --------------------------------------------------------------------------------
 :py_check
-set "python_pth=%base_pth%lib\windows-i686\"
+set python_pth="%base_pth%lib\windows-i686\"
 REM Future: On Renpy py3 we will have 64bit support for win
 REM if "%PROCESSOR_ARCHITECTURE%" EQU "AMD64" (
 REM     set "python_pth=%base_pth%lib\windows-x86-64\"
@@ -52,7 +55,7 @@ if not exist "%python_pth%python.exe" (
 goto :run_py
 
 
-REM Bad end
+REM Uh ohh
 REM --------------------------------------------------------------------------------
 :error
 echo/
@@ -64,8 +67,10 @@ pause>nul|set/p=.            Press any key to exit...
 exit 1
 
 
-REM kingdom of python - lets go
+REM Kingdom of python --- lets go
 REM --------------------------------------------------------------------------------
 :run_py
-"%python_pth%python.exe" "%~f0" %* & goto :eof
-REM # place python code here
+REM Works in 7
+"%python_pth%python.exe" -EOO "%~f0" %* & goto :eof
+"""
+# place python code here
