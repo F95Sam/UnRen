@@ -49,9 +49,9 @@ py_check() {
 
 # Lets go
 run_py() {
-    # This does not work.
-    # From the look of it the whole path stuff and environment needs be configured -> Nonsense for lx and mac where py runs already
-    $python_pth"/python" <<EOF
+    # Did not work: The whole py-path/-home/environment needs be configured -> Nonsense for lx and mac where py runs already
+    # NOTE: with switch -E it works so far without setting some py path vars
+    $python_pth"/python -EOO" <<EOF
     # print("Here should be a hunk of UnRen_py code.")
 EOF
 }
