@@ -6,15 +6,16 @@ echo Or not...
 
 
 
-REM read from central location
-set /p version=<version.txt
+
+
+set version=version=0.4.0-alpha
 title "UnRen for Windows v%version%"
 
 
 REM path check
 REM --------------------------------------------------------------------------------
 :path_check
-REM lets assume the ideal (script sits in the games base dir)
+REM lets assume the ideal (script sits in the games base-dir)
 set base_pth=%~dp0
 
 if exist "game" if exist "lib" if exist "renpy" (
@@ -37,9 +38,9 @@ REM py check
 REM --------------------------------------------------------------------------------
 :py_check
 set python_pth="%base_pth%lib\windows-i686\"
-REM Future: On Renpy py3 we will have 64bit support for win
+REM Future: On Renpy 8 (py3) we will have 64bit support for win
 REM if "%PROCESSOR_ARCHITECTURE%" EQU "AMD64" (
-REM     set "python_pth=%base_pth%lib\windows-x86-64\"
+REM     set "python_pth=%base_pth%lib\windows-x86_64\"
 REM ) else (
 REM     set "python_pth=%base_pth%lib\windows-i686\"
 REM )
@@ -55,7 +56,7 @@ if not exist "%python_pth%python.exe" (
 goto :run_py
 
 
-REM Uh ohh
+REM It got awry
 REM --------------------------------------------------------------------------------
 :error
 echo/
