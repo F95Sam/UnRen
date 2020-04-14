@@ -18,14 +18,8 @@ import pickle
 import base64
 import textwrap
 
-# NOTE: Needs the backported package pathlib2 installed
-# win: python -m pip install pathlib2
-# unix: python pip install pathlib2
-# mac: sudo easy_install pip pip install pathlib2 (?)
-from pathlib2 import Path as pt
-
-
-# NOTE: py3.6 f-strings are not available in py2
+# NOTE: We need to use os.path to replace the py3 pathlib functionality
+# py3.6 f-strings are not available in py2
 # code from py3 script will need rework with the old % and .format styles
 
 
@@ -45,5 +39,5 @@ __version__ = VER_TXT
 
 
 if __name__ == '__main__':
-    if not sys.version_info >= (2, 7):
+    if not sys.version_info == (2, 7):
         raise f"Must be executed in Python 2.7.x but not 3.x or later. You are running {sys.version}"
