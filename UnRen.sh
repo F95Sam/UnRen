@@ -1,10 +1,15 @@
 #!/bin/bash
-# # Rather dumb to exec this as shell and then py, if we can do direct py
+# Rather dumb imho to exec this as shell and then py, if we can do direct py
 
-# read from central location
-version=$(<version.txt)
-title="UnRen for Linux v$version"
-# should there to read "...and Mac"
+
+
+
+
+
+
+
+version="0.5.0-alpha"
+title="UnRen for Linux and Mac v$version"
 
 
 path_check() {
