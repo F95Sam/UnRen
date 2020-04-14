@@ -22,7 +22,7 @@ __title__ = 'UnRen streambuilder'
 __license__ = 'Apache-2'
 __author__ = 'madeddy'
 __status__ = 'Development'
-__version__ = '0.2.0-alpha'
+__version__ = '0.3.0-alpha'
 
 
 import os
@@ -70,15 +70,15 @@ def ur_main():
     """This executes all program steps."""
     # QUESTION: I think paths could be fixed; eleminates cli parsing but rigide
 
-    # hm... do we better use a absolute path
+    # hm... do we better use a absolute path:
     # tools_pth = pt('/home/olli/Code/tst/ur_tools')
-    # or relative in a fixed dir struct
+    # or relative in a fixed dir struct:
     tools_pth = pt('ur_tools')
     if len(sys.argv) > 1:
         target_scr = sys.argv[1]
     else:
-        target_scr = "ur_tester.py"
-        # target_scr = "unren_py3.6.py"
+        # target_scr = "ur_tester.py"
+        target_scr = "unren_py36.py"
         # print("Target path missing. \
         # Use: python3 unren_build.py '/path/to/target/script.py'")
 
