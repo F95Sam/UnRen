@@ -29,7 +29,7 @@ __title__ = 'UnRen'
 __license__ = 'Apache-2'
 __author__ = 'F95sam, madeddy'
 __status__ = 'Development'
-__version__ = '0.3.0-alpha'
+__version__ = '0.4.0-alpha'
 
 
 _TOOLSTREAM = r"_placeholder"
@@ -67,7 +67,7 @@ class UnRen:
         # self.unrpyc = None
 
 
-    # TODO: Complete and test self.inf functionality
+    # TODO: test inf functionality some more; newline with textwrap...?
     @classmethod
     def inf(cls, inf_level, msg, m_sort=None):
         """Outputs by the current verboseness level allowed self.infos."""
@@ -93,7 +93,8 @@ class UnRen:
         except ImportError:
             raise ImportError("Unable to import the tools from temp directory.")
 
-    # TODO: Rework write config functionality to less methods
+    # IDEA: Rework write config functionality to less methods
+    # the config text of the methods could be taken from the vars in central location
     def write_to_file(self, cfg_txt):
         """Writes given text to the file."""
         outfile = pt(self.game_pth).joinpath("unren_cfg.rpy").resolve()
@@ -107,7 +108,8 @@ class UnRen:
             with outfile.open('a+') as ofi:
                 print(textwrap.dedent(header_txt), file=ofi)
 
-        # TODO: Add check if tasks txt already in the cfg file(prevent multiple text)
+        # TODO: Add checks if tasks txt already in the cfg file(prevent multiple text)
+
         with outfile.open('a+') as ofi:
             print(textwrap.dedent(cfg_txt), file=ofi)
 
@@ -127,7 +129,7 @@ class UnRen:
         self.inf(0, "For now does `unrpyc` not support python 3! Stay tuned for news on this.", m_sort='warn')
     #     if UnRen.count["rpyc_f_found"] == 0:
     #         self.inf(0, "Could not find any valid target files in the directory tree.", m_sort='note')
-        # TODO: reactivate rpyc decompiler if py3 support
+        # TODO: reactivate rpyc decompiler if py3 is supported
     #     unrpyc.decompile_rpyc(game_pth)
     #     self.inf(2, "Decompling of rpyc files done.")
 
@@ -208,7 +210,7 @@ class UnRen:
 
 
     def _exit(self):
-        # TODO: Cleanup... and perhaps deleting the tempdir tree without shutil
+        # TODO: perhaps deleting the tempdir tree without shutil
         shutil.rmtree(self.ur_tmp_dir)
         if not pt(self.ur_tmp_dir).is_dir():
             self.inf(1, "Tempdir was successful removed.")
@@ -270,10 +272,10 @@ class UnRen:
 
             with f_pth.open('wb') as ofi:
                 ofi.write(f_data)
-        # control
+        # control print
         return self.ur_tmp_dir
 
-    def list_target_files(self):
+    def find_valid_files(self):
         """Determines if rpa and rpyc files are present in the gamedir."""
 
         for fln in self.game_pth.rglob("*"):
@@ -338,7 +340,7 @@ def ur_main(cfg):
     _ur = UnRen(target=cfg.targetpath, verbose=cfg.verbose)
 
     _ur.path_check()
-    _ur.list_target_files()
+    _ur.find_valid_files()
     # control print var assignm. can go
     ur_tmp_d = _ur.toolstream_handler()
     _ur.import_tools()
