@@ -29,7 +29,7 @@ __title__ = 'UnRen'
 __license__ = 'Apache-2'
 __author__ = 'F95sam, madeddy'
 __status__ = 'Development'
-__version__ = '0.4.0-alpha'
+__version__ = '0.5.0-alpha'
 
 
 _TOOLSTREAM = r"_placeholder"
@@ -45,6 +45,26 @@ class UnRen:
     name = "UnRen"
     verbosity = 1
     count = {'rpa_f_found': 0, 'rpyc_f_found': 0}
+
+    menu_screen = fr"""
+       __  __      ____
+      / / / /___  / __ \___  ____
+     / / / / __ \/ /_/ / _ \/ __ \
+    / /_/ / / / / _, _/  __/ / / /
+    \____/_/ /_/_/ |_|\___/_/ /_/  Version {__version__}
+
+      Available Options:
+
+      1) Extract all RPA packages
+      2) Decompile rpyc files
+      3) Enable Console and Developer Menu
+      4) Enable Quick Save and Quick Load
+      5) Force enable skipping of unseen content
+      6) Force enable rollback (scroll wheel)
+      0) All six options above
+
+      x) Exit this application
+    """
     menu_opts = {'1': 'extract',
                  '2': 'decompile',
                  '3': 'console',
@@ -67,7 +87,8 @@ class UnRen:
         # self.unrpyc = None
 
 
-    # TODO: test inf functionality some more; newline with textwrap...?
+    # FIXME: newline with textwrap... how?
+    # test inf functionality some more
     @classmethod
     def inf(cls, inf_level, msg, m_sort=None):
         """Outputs by the current verboseness level allowed self.infos."""
@@ -88,30 +109,37 @@ class UnRen:
             sys.path.append(self.ur_tmp_dir)
             self.rpakit = __import__('rpakit', globals(), locals())
 
-            # WARNING: Dont try to import unrpyc. Its py2 only for now.
-            # import unrpyc
+            # WARNING: Do not try to import `unrpyc`. py2 only for now!
+            # self.unrpyc = __import__('unrpyc', globals(), locals())
         except ImportError:
             raise ImportError("Unable to import the tools from temp directory.")
 
-    # IDEA: Rework write config functionality to less methods
-    # the config text of the methods could be taken from the vars in central location
-    def write_to_file(self, cfg_txt):
+    @staticmethod
+    def make_rpy_cfg(outfile):
+        """Constructs the rpy config file and adds header code."""
+        header_txt = """\
+            # RenPy script file
+            # Config changes; written by UnRen
+
+            init 999 python:
+        """
+        with outfile.open('w') as ofi:
+            print(textwrap.dedent(header_txt), file=ofi)
+
+    # IDEA: Rework write config functionality to less complexity, methods ...
+    def write_rpy_cfg(self, cfg_id, cfg_code, cfg_inf):
         """Writes given text to the file."""
         outfile = pt(self.game_pth).joinpath("unren_cfg.rpy").resolve()
         if not outfile.exists():
-            header_txt = """\
-                # RenPy script file
-                # Config changes; written by UnRen
+            self.make_rpy_cfg(outfile)
 
-                init 999 python:
-            """
-            with outfile.open('a+') as ofi:
-                print(textwrap.dedent(header_txt), file=ofi)
-
-        # TODO: Add checks if tasks txt already in the cfg file(prevent multiple text)
-
-        with outfile.open('a+') as ofi:
-            print(textwrap.dedent(cfg_txt), file=ofi)
+        with outfile.open('r+') as ofi:
+            for line in ofi:
+                if cfg_id in line:
+                    self.inf(2, "Option already active. Skipped.")
+                    return
+            ofi.write(textwrap.dedent(cfg_code))
+            self.inf(2, cfg_inf)
 
     def extract(self):
         """Extracts content from RenPy archives."""
@@ -126,30 +154,29 @@ class UnRen:
 
     def decompile(self):
         """Decompiles RenPy script files."""
+        # TODO: reactivate rpyc decompiler if py3 is supported
         self.inf(0, "For now does `unrpyc` not support python 3! Stay tuned for news on this.", m_sort='warn')
     #     if UnRen.count["rpyc_f_found"] == 0:
     #         self.inf(0, "Could not find any valid target files in the directory tree.", m_sort='note')
-        # TODO: reactivate rpyc decompiler if py3 is supported
     #     unrpyc.decompile_rpyc(game_pth)
     #     self.inf(2, "Decompling of rpyc files done.")
 
-
     def console(self):
         """Enables the RenPy console and developer menu."""
-        console_txt = """
+        console_id = "# Developer menu and console"
+        console_code = """
             # ### Developer menu and console ###
                 config.developer = True
                 config.console = True
         """
-        self.write_to_file(console_txt)
-        self.inf(2, "Added access to developer menu and debug console with the \
-            following keybindings:\
-            \nConsole: SHIFT+O\nDev Menu: SHIFT+D")
-
+        console_inf = "Added access to developer menu and debug console with the \
+                      following keybindings:\nConsole: SHIFT+O\nDev Menu: SHIFT+D"
+        self.write_rpy_cfg(console_id, console_code, console_inf)
 
     def quick(self):
         """Enable Quick Save and Quick Load."""
-        quick_txt = """
+        quick_id = "# Quick save and load"
+        quick_code = """
             # ### Quick save and load ###
                 try:
                     config.underlay[0].keymap['quickLoad'] = QuickLoad()
@@ -159,27 +186,27 @@ class UnRen:
                 except:
                     print("Error: Quicksave/-load not working.")
         """
-        self.write_to_file(quick_txt)
-        self.inf(2, "Added Quick load, -save with the following keybindings:\
-            \nQuick Save: F5\nQuick Load: F9")
-
+        quick_inf = "Added Quick load, -save with the following keybindings:\
+                    \nQuick Save: F5\nQuick Load: F9"
+        self.write_rpy_cfg(quick_id, quick_code, quick_inf)
 
     def skip(self):
         """Enables skipping of unseen content."""
-        skip_txt = """
+        skip_id = "# Skipping"
+        skip_code = """
             # ### Skipping ###
                 _preferences.skip_unseen = True
                 renpy.game.preferences.skip_unseen = True
                 renpy.config.allow_skipping = True
                 renpy.config.fast_skipping = True
         """
-        self.write_to_file(skip_txt)
-        self.inf(2, "Added the abbility to skip all text using TAB and CTRL keys.")
-
+        skip_inf = "Added the abbility to skip all text using TAB and CTRL keys."
+        self.write_rpy_cfg(skip_id, skip_code, skip_inf)
 
     def rollback(self):
         """Enable rollback fuctionality."""
-        rollback_txt = """
+        rollback_id = "# Rollback"
+        rollback_code = """
             # ### Rollback ###
                 renpy.config.rollback_enabled = True
                 renpy.config.hard_rollback_limit = 256
@@ -194,9 +221,8 @@ class UnRen:
                 except:
                     print("Error: Rollback not working.")
         """
-        self.write_to_file(rollback_txt)
-        self.inf(2, "Rollback with the scrollwheel is now activated.")
-
+        rollback_inf = "Rollback with use of the mousewheel is now activated."
+        self.write_rpy_cfg(rollback_id, rollback_code, rollback_inf)
 
     def all_opts(self):
         """Runs all available options."""
@@ -208,7 +234,6 @@ class UnRen:
         self.rollback()
         self.inf(2, "All requested options finished.")
 
-
     def _exit(self):
         # TODO: perhaps deleting the tempdir tree without shutil
         shutil.rmtree(self.ur_tmp_dir)
@@ -217,36 +242,15 @@ class UnRen:
         else:
             self.inf(0, f"Tempdir {self.ur_tmp_dir} could not be removed!", m_sort='warn')
 
-        self.inf(0, "\nExiting UnRen by user request.")
+        self.inf(0, "Exiting UnRen by user request.")
         sys.exit(0)
-
 
     def main_menu(self):
         """Displays a console text menu and allows choices from the available options."""
-
-        menu_screen = fr"""
-           __  __      ____
-          / / / /___  / __ \___  ____
-         / / / / __ \/ /_/ / _ \/ __ \
-        / /_/ / / / / _, _/  __/ / / /
-        \____/_/ /_/_/ |_|\___/_/ /_/  Version {__version__}
-
-          Available Options:
-
-          1) Extract all RPA packages
-          2) Decompile rpyc files
-          3) Enable Console and Developer Menu
-          4) Enable Quick Save and Quick Load
-          5) Force enable skipping of unseen content
-          6) Force enable rollback (scroll wheel)
-          0) All six options above
-
-          x) Exit this application
-        """
-
         while True:
-            print(f"\n\n{menu_screen}\n\n")
+            print(f"\n\n{UnRen.menu_screen}\n\n")
             userinp = input("Type the corresponding key character to the task you want to execute: ").lower()
+            # FIXME: keyerror on empty str (enter key)
             if any(char not in UnRen.menu_opts.keys() for char in userinp):
                 self.inf(0, "\nInvalid key used. Try again.", m_sort='note')
                 continue
@@ -255,9 +259,7 @@ class UnRen:
 
         meth_call = getattr(self, UnRen.menu_opts[userinp])
         meth_call()
-        # UnRen.menu_opts[userinp]()
         self.main_menu()
-
 
     def toolstream_handler(self):
         """Loads and unpacks the stream to usable source state in a tempdir."""
@@ -289,7 +291,7 @@ class UnRen:
     def path_check(self):
         """Path work like location checks."""
         # NOTE: There should be better location checks. And if we use the batch/RenPy
-        # python there must be changes
+        # python there must be changes in here
 
         if not self.in_pth:
             script_dir = pt(__file__).resolve().parent
@@ -349,7 +351,7 @@ def ur_main(cfg):
         print(item)
     _ur.main_menu()
 
-    print("\nMain completed!\n")
+    print("\nMain function completed! This should not happen.\n")
 
 
 if __name__ == '__main__':
