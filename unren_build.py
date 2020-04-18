@@ -22,7 +22,7 @@ __title__ = 'UnRen streambuilder'
 __license__ = 'Apache-2'
 __author__ = 'madeddy'
 __status__ = 'Development'
-__version__ = '0.3.0-alpha'
+__version__ = '0.4.0-alpha'
 
 
 import os
@@ -32,13 +32,27 @@ import pickle
 import base64
 
 
-def embed_stream(target_s, pack_stream):
+def embed_stream(target_s, embed_data):
     """Embed's the datastream in the unren script."""
     with pt(target_s).open('rb+') as ofi:
-        data = ofi.read()
+        file_data = ofi.read()
         ofi.seek(0)
         ofi.truncate()
-        ofi.write(data.replace(b"_placeholder", pack_stream))
+        ofi.write(file_data.replace(b"_placeholder", embed_data))
+
+
+def py_packer(target_py_s):
+    """ the py."""
+    with pt(target_py_s).open('rb') as ofi:
+        py_stream = ofi.read()
+    return py_stream
+
+
+def py2shell(target_py_s, target_sh_s, target_cmd_s):
+    """Constructs the py stream and embeds it in the sh/cmd files."""
+    py_stream = py_packer(target_py_s)
+    embed_stream(target_sh_s, py_stream)
+    # embed_stream(target_cmd_s, py_stream)
 
 
 def tools_packer(tools_pth, pth_lst):
@@ -56,6 +70,14 @@ def tools_packer(tools_pth, pth_lst):
     return stream
 
 
+def tool2py(tools_pth, target_py3_s, target_py2_s):
+    """Constructs the tools stream and embeds it in the py file."""
+    packlist = path_walker(tools_pth)
+    toolstream = tools_packer(tools_pth, packlist)
+    embed_stream(target_py3_s, toolstream)
+    # embed_stream(target_py2_s, toolstream)
+
+
 def path_walker(tools_pth):
     """Walks the tools directory and collects a list of py files."""
     tool_lst = []
@@ -70,21 +92,24 @@ def ur_main():
     """This executes all program steps."""
     # QUESTION: I think paths could be fixed; eleminates cli parsing but rigide
 
-    # hm... do we better use a absolute path:
+    # Part 1 - embed tools in the py files  # hm...do we use a absolute path:
     # tools_pth = pt('/home/olli/Code/tst/ur_tools')
-    # or relative in a fixed dir struct:
+    # or relative path in a fixed dir struct:
     tools_pth = pt('ur_tools')
     if len(sys.argv) > 1:
-        target_scr = sys.argv[1]
+        target_py_s = sys.argv[1]
     else:
-        # target_scr = "ur_tester.py"
-        target_scr = "unren_py36.py"
+        target_py3_s = "unren_py36.py"
+        target_py2_s = "unren_py27.py"
         # print("Target path missing. \
         # Use: python3 unren_build.py '/path/to/target/script.py'")
+    tool2py(tools_pth, target_py3_s, target_py2_s)
 
-    packlist = path_walker(tools_pth)
-    stream = tools_packer(tools_pth, packlist)
-    embed_stream(target_scr, stream)
+    # part2 - embed py files in the shell/cmd files
+    target_sh_s = "unren.sh"
+    target_cmd_s = "unren.cmd"
+    py2shell(target_py_s, target_sh_s, target_cmd_s)
+
 
     print("\nUnRen streambuilder:>> Task completed!\n")
 
