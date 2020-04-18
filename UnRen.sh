@@ -10,6 +10,7 @@
 
 version="0.5.0-alpha"
 title="UnRen for Linux and Mac v$version"
+echo -ne "\e[8;0;90t"
 
 
 path_check() {
@@ -52,12 +53,12 @@ py_check() {
 }
 
 
-# Lets go
+# Python, lets go
 run_py() {
     # Did not work: The whole py-path/-home/environment needs be configured -> Nonsense for lx and mac where py runs already
     # NOTE: with switch -E it works so far without setting some py path vars
     $python_pth"/python -EOO" <<EOF
-    # print("Here should be a hunk of UnRen_py code.")
+    _placeholder
 EOF
 }
 

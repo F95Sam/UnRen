@@ -8,9 +8,9 @@ echo Or not...
 
 
 
-set version=version=0.4.0-alpha
+set version=version=0.5.0-alpha
 title "UnRen for Windows v%version%"
-
+mode con: cols=90 lines=50
 
 REM path check
 REM --------------------------------------------------------------------------------
@@ -74,4 +74,4 @@ REM ----------------------------------------------------------------------------
 REM Works in 7
 "%python_pth%python.exe" -EOO "%~f0" %* & goto :eof
 """
-# place python code here
+_placeholder
