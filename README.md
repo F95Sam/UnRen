@@ -6,25 +6,41 @@ The following content is just a raw outline of the current project state respect
 development plans and subject to change at any given time.
 
 ## File overview
+`readme.md`
+
+The file for what you read just now...
+
+`unren_py36.py`
+
+The UnRen main app for py 3.6+ in pure python.
+_In progress_
+
+`unren_py27.py`
+
+The UnRen main app for py 2.7 in pure python.
+_Barely started_
+
 `unren.cmd` / `unren.sh`
+
 The Windows command and Linux/Mac shell files are basicly identical and planed as the
 one-click starter for the python main app. The python code will be embeded so we get
 hybrid files.
 
 `unren_build.py`
+
 A short helper who converts the tools to a bytestream and embeds it in the unren main
 script.(+ pickled and base coded)
 
-`unren_py36.py`
-The UnRen main app for py 3.6+
-_In progress_
+`unren_embed_py36.py`
 
-`unren_py27.py`
-The UnRen main app for py 2.7
+The reduced version of the UnRen(py3.6+) for embedding in the batch/shell scripts. 
 _Not started_
 
-`readme.md`
-What you read just now...
+`unren_embed_py27.py`
+
+The reduced version of the UnRen(py2.7) for embedding in the batch/shell scripts. 
+_Not started_
+
 
 ## Contributing
 If you want to add something to this project, feel free to fork the UnRen repo and
