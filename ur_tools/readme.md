@@ -1,4 +1,4 @@
-# Info
+# Tool dir info
 This directory and the content is possibly just temporary. 
 
 We need the tools and their dir present so we have a complete build environment for
