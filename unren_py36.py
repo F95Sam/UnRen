@@ -29,7 +29,7 @@ __title__ = 'UnRen'
 __license__ = 'Apache-2'
 __author__ = 'F95sam, madeddy'
 __status__ = 'Development'
-__version__ = '0.5.0-alpha'
+__version__ = '0.5.1-alpha'
 
 
 _TOOLSTREAM = r"_placeholder"
@@ -83,8 +83,7 @@ class UnRen:
         self.game_pth = None
         self.ur_tmp_dir = None
         self.rpakit = None
-        # NOTE: Unneeded till supporting py3
-        # self.unrpyc = None
+        # self.unrpyc = None  # NOTE: Unneeded till it supports py3
 
 
     # FIXME: newline with textwrap... how?
@@ -126,7 +125,7 @@ class UnRen:
         with outfile.open('w') as ofi:
             print(textwrap.dedent(header_txt), file=ofi)
 
-    # IDEA: Rework write config functionality to less complexity, methods ...
+    # IDEA: Rework write config functionality to less complexity, fewer methods...
     def write_rpy_cfg(self, cfg_id, cfg_code, cfg_inf):
         """Writes given text to the file."""
         outfile = pt(self.game_pth).joinpath("unren_cfg.rpy").resolve()
@@ -151,7 +150,6 @@ class UnRen:
         # TODO: assert success
         self.inf(2, "Extracting of RPA files done.")
 
-
     def decompile(self):
         """Decompiles RenPy script files."""
         # TODO: reactivate rpyc decompiler if py3 is supported
@@ -161,6 +159,7 @@ class UnRen:
     #     unrpyc.decompile_rpyc(game_pth)
     #     self.inf(2, "Decompling of rpyc files done.")
 
+    # IDEA: We could also use the original variables in the rpy's and change them
     def console(self):
         """Enables the RenPy console and developer menu."""
         console_id = "# Developer menu and console"
@@ -296,6 +295,9 @@ class UnRen:
         if not self.in_pth:
             script_dir = pt(__file__).resolve().parent
         script_dir = pt(self.in_pth)
+        # TODO: Abbility to drag & drop a folder in the terminal and get the path we
+        # work with. e.g
+        # script_dir = given_input
         # control print
         print(f"script {script_dir}")
         print(f"cwd {os.getcwd()}")
