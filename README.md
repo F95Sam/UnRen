@@ -5,41 +5,41 @@ At the moment **this is the development branch** for the python rewrite of the _
 The following content is just a raw outline of the current project state respectively
 development plans and subject to change at any given time.
 
-## File overview
-`readme.md`
+## Content overview
 
-The file for what you read just now...
-
-`unren_py36.py`
-
-The UnRen main app for py 3.6+ in pure python.
+```
+unren_py36.py` / `unren_py27.py
+```
+The UnRen main app for py 3.6+ and 2.7 completely in python. Users who want to use this variant must be able to work with a terminal.
 _In progress_
 
-`unren_py27.py`
+```
+unren.cmd
+``` 
+The Windows command file is planed as the one-click starter for the python main app. The python code will be embeded so we get a hybrid file. 
+_Completed_
 
-The UnRen main app for py 2.7 in pure python.
-_Barely started_
+_The following files are just for project internal use._ 
 
-`unren.cmd` / `unren.sh`
+```
+unren_build.py
+``` 
+A short helper who constructs the final batch script. 
+- Step 1: Converts the tools to a bytestream and embeds it in the unren python
+script(+ pickled and base coded)
+- Step 2: Writes the UnRen python script form step 1 in the batch file. 
+_In progress_
 
-The Windows command and Linux/Mac shell files are basicly identical and planed as the
-one-click starter for the python main app. The python code will be embeded so we get
-hybrid files.
-
-`unren_build.py`
-
-A short helper who converts the tools to a bytestream and embeds it in the unren main
-script.(+ pickled and base coded)
-
-`unren_embed_py36.py`
-
-The reduced version of the UnRen(py3.6+) for embedding in the batch/shell scripts. 
+```
+unren_embed_py36.py` / `unren_embed_py27.py
+```
+The reduced version of the UnRen(py3.6+ / py2.7) for embedding in the batch script.  
 _Not started_
 
-`unren_embed_py27.py`
-
-The reduced version of the UnRen(py2.7) for embedding in the batch/shell scripts. 
-_Not started_
+```
+readme.md
+```
+The file for what you read just now...
 
 
 ## Contributing
