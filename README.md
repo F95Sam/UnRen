@@ -1,43 +1,44 @@
 # Dev branch
-At the moment **this is the development branch** for the python rewrite of the _UnRen application._
+At the moment **this is the development branch** for the python rewrite of the
+_UnRen application._
 > **Do not use for productive work!**
 
 The following content is just a raw outline of the current project state respectively
-development plans and subject to change at any given time.
+development plans and subject to change **at any given time**.
 
 ## Content overview
-
-```
-unren_py36.py` / `unren_py27.py
-```
-The UnRen main app for py 3.6+ and 2.7 completely in python. Users who want to use this variant must be able to work with a terminal.
+`unren_py36.py` / `unren_py27.py`  
+The UnRen main app for py 3.6+ and 2.7 completely in python. Users who want to use
+this variant must be able to work with a terminal.
 _In progress_
 
 _The following files are just for project internal use._ 
 
 `unren_build.py`  
-A helper script who constructs the final release scripts. 
-- _Later_ Step 1: Writes the rpy snippeds in the python script files.
+A helper script who constructs the final release versions.
+- _(Later TODO)_ Step 1: Writes the rpy snippeds in the python script files.
 - Step 2: Converts the tools to a bytestream and embeds it in the unren python
 script(+ pickled and base coded)
-- Step 3 (optional, just win): Writes the UnRen python script from previous steps in the batch file. 
+- Step 3 (optional, just win): Writes the UnRen python script from previous steps in
+the batch file. 
 _In progress_
 
 `unren_base.cmd`  
-The Windows command file is planed as the one-click starter for the python main app. The python code will be embeded so we get a hybrid file. 
+This Windows command file is planed as the one-click starter for the python main
+app. The python code will be embeded so we get a hybrid file.
 _Completed_
 
 `unren_py36_embed.py` / `unren_py27_embed.py`  
-The reduced version of the UnRen(py3.6+ / py2.7) for embedding in the batch script.  
+The reduced version of the UnRen(py3.6+ / py2.7) for embedding in the batch script.
 _Not started_
 
-`ur_tools/*`
+`ur_tools/*`  
 The helper tools which will be embeddet in the python script.
 
-`rpy_embeds/*`
+`rpy_embeds/*`  
 The RenPy code snippeds which will be embeddet in the python script.
 
-`readme.md`
+`readme.md`  
 ...the file for the stuff you read just now.
 
 ## Contributing
@@ -83,6 +84,7 @@ python2 unren_py27.py ../your_path/game_name/
 `renpy`, `lib` and a starter file e.g. `your_games_name.(exe|py|sh)`. If not, you're
 in the wrong loction!
 
+---
 _TBD:_
 ## Legal
 ### License
