@@ -29,10 +29,10 @@ __title__ = 'UnRen'
 __license__ = 'Apache-2'
 __author__ = 'F95sam, madeddy'
 __status__ = 'Development'
-__version__ = '0.5.1-alpha'
+__version__ = '0.5.2-alpha'
 
 
-_TOOLSTREAM = r"_placeholder"
+_TOOLSTREAM = r"tool_placeholder"
 
 
 class UnRen:
