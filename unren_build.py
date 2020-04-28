@@ -22,11 +22,12 @@ __title__ = 'UnRen builder'
 __license__ = 'Apache-2'
 __author__ = 'madeddy'
 __status__ = 'Development'
-__version__ = '0.5.0-alpha'
+__version__ = '0.6.0-alpha'
 
 
 import os
 import sys
+import argparse
 from pathlib import Path as pt
 import pickle
 import base64
@@ -140,30 +141,54 @@ def rpycfg2py(src_py2, src_py3, embed_py2, embed_py3):
     embed_rpycfg(embed_py3)
 
 
-def ur_main():
+def parse_args():
+    """Provides argument parsing functionality on CLI. Obviously."""
+    aps = argparse.ArgumentParser(description="Helper app to build the release versions of UnRen.", epilog="")
+    aps.add_argument('-1',
+                     dest='task',
+                     action='store_const',
+                     const='part_1',
+                     help="Execute part 1 - embeds the RenPy config snippeds.")
+    aps.add_argument('-2',
+                     dest='task',
+                     action='store_const',
+                     const='part_2',
+                     help="Execute part 2 - embeds the tools into the Python scripts.")
+    aps.add_argument('-3',
+                     dest='task',
+                     action='store_const',
+                     const='part_3',
+                     help="Execute part 3 - embeds the Python script into the cmd.")
+    aps.add_argument('--version',
+                     action='version',
+                     version=f'%(prog)s : { __title__} {__version__}')
+    return aps.parse_args()
+
+
+def build_main(cfg):
     """This executes all program steps."""
-    # TODO: Add argparser so we can choose wich part we want to execute
     dst_py2 = "unren_py27.py"
     dst_py3 = "unren_py36.py"
     embed_py2 = "unren_py27_embed.py"
     embed_py3 = "unren_py36_embed.py"
+
     # Part 1
-    # if cfg.write_cfg:
-    rpycfg2py(dst_py2, dst_py3, embed_py2, embed_py3)
+    if cfg.task == 'part_1':
+        rpycfg2py(dst_py2, dst_py3, embed_py2, embed_py3)
 
     # Part 2 - embed tools in the py files  # hm...do we use a absolute path:
     # tools_pth = pt('/home/olli/Code/tst/ur_tools')
     # or relative path in a fixed dir struct:
-    # if cfg.make_py:
-    tools_pth = pt('ur_tools')
-    tool2py(tools_pth, dst_py2, dst_py3)
+    elif cfg.task == 'part_2':
+        tools_pth = pt('ur_tools')
+        tool2py(tools_pth, dst_py2, dst_py3)
 
     # part3 - embed py files in the cmd file
-    # if cfg.make_cmd:
-    base_cmd = "unren_base.cmd"
-    dst_cmd2 = "unren27.cmd"
-    dst_cmd3 = "unren36.cmd"
-    py2cmd(embed_py2, embed_py3, base_cmd, dst_cmd2, dst_cmd3)
+    elif cfg.task == 'part_3':
+        base_cmd = "unren_base.cmd"
+        dst_cmd2 = "unren_27.cmd"
+        dst_cmd3 = "unren_36.cmd"
+        py2cmd(embed_py2, embed_py3, base_cmd, dst_cmd2, dst_cmd3)
 
 
     print("\nUnRen builder:>> Task completed!\n")
@@ -172,4 +197,4 @@ def ur_main():
 if __name__ == '__main__':
     if not sys.version_info >= (3, 6):
         raise f"Must be executed in Python 3.6 or later. You are running {sys.version}"
-    ur_main()
+    build_main(parse_args())
