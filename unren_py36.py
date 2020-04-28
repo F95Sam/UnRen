@@ -24,12 +24,11 @@ import pickle
 import base64
 
 
-
 __title__ = 'UnRen'
-__license__ = 'Apache-2'
+__license__ = 'Apache 2.0'
 __author__ = 'F95sam, madeddy'
 __status__ = 'Development'
-__version__ = '0.5.2-alpha'
+__version__ = '0.5.3-alpha'
 
 
 _TOOLSTREAM = r"tool_placeholder"
@@ -357,6 +356,6 @@ def ur_main(cfg):
 
 
 if __name__ == '__main__':
-    if not sys.version_info >= (3, 6):
+    if not sys.version_info[:2] >= (3, 6):
         raise f"Must be executed in Python 3.6 or later. You are running {sys.version}"
     ur_main(parse_args())
