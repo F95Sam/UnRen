@@ -23,15 +23,11 @@ import textwrap
 # code from py3 script will need rework with the old % and .format styles
 
 
- # Subject to change; thats experimental
-with open("version.txt", 'r') as ofi:
-    VER_TXT = ofi.readline().strip()
-
 __title__ = 'UnRen'
 __license__ = 'Apache-2'
 __author__ = 'F95sam, madeddy'
 __status__ = 'Development'
-__version__ = VER_TXT
+__version__ = '0.5.2-alpha'
 
 
 # TODO: Placeholder: On completition of the python 3 version the code needs to be
@@ -39,5 +35,5 @@ __version__ = VER_TXT
 
 
 if __name__ == '__main__':
-    if not sys.version_info == (2, 7):
-        raise f"Must be executed in Python 2.7.x but not 3.x or later. You are running {sys.version}"
+    if not sys.version_info[:2] == (2, 7):
+        raise Exception("Must be executed in Python 2.7.x but not 3.x or later.\nYou are running {}".format(sys.version))
