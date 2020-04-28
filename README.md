@@ -13,7 +13,7 @@ Small multifunctional wrapper app around tools for the work with RenPy files.
 The features offered include:
 - Decompressing RPA files
 - Decompiling RenPy script files (rpyc)
-- Activating respektive reactivating:
+- Activating respectively reactivating:
  - Developer menu and console
  - Quick Save and Quick Load
  - Rollback function
@@ -22,26 +22,49 @@ The features offered include:
 
 ## Usage
 ### Console command version for win
-Double click to start the app file or open a cmd terminal and execute there
-`..\your_path\unren36.cmd`
+Double click to start the app file or open a cmd terminal and execute there for example
+```batch
+C:\..\your_path\unren27.cmd
+```
+Alternatively use in the code line `unren36.cmd` if the game needs Python 3.
+
+> Inside the game directory we called above `game_name` must be the directorys
+`renpy`, `lib` and a starter file like `your_game_name.(exe|py|sh)`.
+e.g. `the_question.py`
+If not, you're in the wrong loction!
 
 ### Pure python version
-For python 3.6+ use:
-```shell
+We can start the python-only scripts in two ways. Either we use the in your operating
+system installed python or the one which comes with your RenPy game.
+
+#### OS python
+Just open your systems terminal and use the command line for your use case.
+For python 3.6+:
+```sh
 python3 unren_py36.py ../your_path/game_name/
 ```
-or for python 2.7+
-```shell
+or for python 2.7+:
+```sh
 python2 unren_py27.py ../your_path/game_name/
 ```
 
-> Inside the game directory we called above `game_name` must be the directorys
-`renpy`, `lib` and a starter file e.g. `your_games_name.(exe|py|sh)`. If not, you're
-in the wrong loction!
+#### RenPy python
+To use the Python which came with your game, the corresponding system architecture
+must be selected in the lib folder. Also if more as one OS available is the correct
+OS directory must be considered.
+e.g.
+For **64** Bit on **Linux** and with a Python **3** game:
+```
+../your_path/game_name/lib/linux-x86_64/python -EOO unren_py37.py ../your_path/game_name/
+```
+For **32** Bit on **Windows** and with a Python **2** game:
+```
+../your_path/game_name/lib/windows-i686/python -EOO unren_py27.py ../your_path/game_name/
+```
 
 
 ## Project content overview
-### _Release versions_
+### _Release version files_
 `unren_py36.py` / `unren_py27.py`  
 The UnRen main app for py 3.6+ or 2.7 completely in python. Users who want to use
 this variant must be able to work with a terminal.
@@ -51,7 +74,7 @@ _In progress_
 A command script wrapper for the UnRen main app for py 3.6+ or 2.7. For users who
 want to use one-click start for the app.
 
-### _Internal used project modul files_ 
+### _Internal used project module files_ 
 
 `unren_build.py`  
 A helper script who constructs the final release versions from different source
