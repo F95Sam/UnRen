@@ -28,7 +28,7 @@ __title__ = 'UnRen'
 __license__ = 'Apache 2.0'
 __author__ = 'F95sam, madeddy'
 __status__ = 'Development'
-__version__ = '0.6.0-alpha'
+__version__ = '0.7.0-alpha'
 
 
 _TOOLSTREAM = "tool_placeholder"
@@ -224,12 +224,9 @@ class UnRen:
 
     def all_opts(self):
         """Runs all available options."""
-        self.extract()
-        self.decompile()
-        self.console()
-        self.quick()
-        self.skip()
-        self.rollback()
+        runall_l = {getattr(self, val) for key, val in UnRen.menu_opts.items() \
+                    if key not in "0x"}
+        [item() for item in runall_l]
         self.inf(2, "All requested options finished.")
 
     def _exit(self):
@@ -288,9 +285,7 @@ class UnRen:
         # NOTE: There should be better location checks. And if we use the batch/RenPy
         # python there must be changes in here
 
-        if not self.in_pth:
-            script_dir = pt(__file__).resolve().parent
-        script_dir = pt(self.in_pth)
+        script_dir = pt(__file__).resolve().parent if not self.in_pth else self.in_pth
         # TODO: Abbility to drag & drop a folder in the terminal and get the path we
         # work with. e.g
         # script_dir = given_input
