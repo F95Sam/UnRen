@@ -32,8 +32,12 @@ __version__ = '0.5.2-alpha'
 
 # TODO: Placeholder: On completition of the python 3 version the code needs to be
 # copied over and adjusted for python 2.7
-
+def main():
+    """This executes all program steps.
+    """
+    if not sys.version_info[:2] == (2, 7):
+        raise Exception("Must be executed in Python 2.7.x but not 3.x or later.\n"
+                        "You are running {}".format(sys.version))
 
 if __name__ == '__main__':
-    if not sys.version_info[:2] == (2, 7):
-        raise Exception("Must be executed in Python 2.7.x but not 3.x or later.\nYou are running {}".format(sys.version))
+    main()
