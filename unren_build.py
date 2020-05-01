@@ -28,7 +28,7 @@ __title__ = 'UnRen builder'
 __license__ = 'Apache-2'
 __author__ = 'madeddy'
 __status__ = 'Development'
-__version__ = '0.8.0-alpha'
+__version__ = '0.9.0-alpha'
 
 
 import os
@@ -141,7 +141,15 @@ def py2cmd(embed_py2, embed_py3, base_cmd, dst_cmd2, dst_cmd3):
 
 def parse_args():
     """Provides argument parsing functionality on CLI. Obviously."""
-    aps = argparse.ArgumentParser(description="Helper app to build the release versions of UnRen.", epilog="")
+    def valid_switch():
+        """Helper function to determine if a task is choosen."""
+        if not args.task:
+            aps.print_help()
+            raise argparse.ArgumentError(args.task, f"\nNo task requested; " \
+                                         "either -1, -2 or -3 is required.")
+    aps = argparse.ArgumentParser(
+        description="Helper app to build the release versions of UnRen.",
+        epilog="")
     aps.add_argument('-1',
                      dest='task',
                      action='store_const',
@@ -160,7 +168,9 @@ def parse_args():
     aps.add_argument('--version',
                      action='version',
                      version=f'%(prog)s : { __title__} {__version__}')
-    return aps.parse_args()
+    args = aps.parse_args()
+    valid_switch()
+    return args
 
 
 def build_main(cfg):
