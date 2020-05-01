@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-This is a helper app for "UnRen" to collect, pack and embed needet tool-files
+This is a helper app for "UnRen" to collect, pack and embed diff. module files
 into the main script.
 
 Requirements: py 3.6
@@ -22,7 +22,7 @@ __title__ = 'UnRen builder'
 __license__ = 'Apache-2'
 __author__ = 'madeddy'
 __status__ = 'Development'
-__version__ = '0.6.0-alpha'
+__version__ = '0.7.0-alpha'
 
 
 import os
@@ -83,7 +83,6 @@ def tools_packer(tools_pth, pth_lst):
 
         rel_fp = pt(f_item).relative_to(tools_pth)
         store[str(rel_fp)] = d_chunk
-
     # NOTE: To reduce size of output a compressor(zlib, lzma...) can be used in the middel of pickle and the encoder; Not at the end - isn't py code safe
     stream = base64.b85encode(pickle.dumps(store))
     return stream
@@ -104,8 +103,8 @@ def tool2py(tools_pth, dst_py2, dst_py3):
     placeholder = "tool_placeholder"
     packlist = path_walker(tools_pth)
     toolstream = tools_packer(tools_pth, packlist)
-    embed_data(dst_py3, toolstream, placeholder)
     # embed_data(dst_py2, toolstream, placeholder)
+    embed_data(dst_py3, toolstream, placeholder)
 
 
 # Part 1
@@ -148,17 +147,17 @@ def parse_args():
                      dest='task',
                      action='store_const',
                      const='part_1',
-                     help="Execute part 1 - embeds the RenPy config snippeds.")
+                     help="Execute step 1 - embeds the RenPy config snippeds.")
     aps.add_argument('-2',
                      dest='task',
                      action='store_const',
                      const='part_2',
-                     help="Execute part 2 - embeds the tools into the Python scripts.")
+                     help="Execute step 2 - embeds the tools into the Python scripts.")
     aps.add_argument('-3',
                      dest='task',
                      action='store_const',
                      const='part_3',
-                     help="Execute part 3 - embeds the Python script into the cmd.")
+                     help="Execute step 3 - embeds the Python script into the cmd.")
     aps.add_argument('--version',
                      action='version',
                      version=f'%(prog)s : { __title__} {__version__}')
@@ -173,6 +172,9 @@ def build_main(cfg):
     embed_py3 = "unren_py36_embed.py"
 
     # Part 1
+    if not sys.version_info[:2] >= (3, 6):
+        raise Exception("Must be executed in Python 3.6 or later.\n"
+                        f"You are running {sys.version}")
     if cfg.task == 'part_1':
         rpycfg2py(dst_py2, dst_py3, embed_py2, embed_py3)
 
@@ -190,11 +192,8 @@ def build_main(cfg):
         dst_cmd3 = "unren_36.cmd"
         py2cmd(embed_py2, embed_py3, base_cmd, dst_cmd2, dst_cmd3)
 
-
     print("\nUnRen builder:>> Task completed!\n")
 
 
 if __name__ == '__main__':
-    if not sys.version_info >= (3, 6):
-        raise f"Must be executed in Python 3.6 or later. You are running {sys.version}"
     build_main(parse_args())
