@@ -10,7 +10,7 @@ Abbilitys are unpacking rpa files, decompiling rpyc(py2!) files and enabling res
 reactivating diverse RenPy functions by script commands.
 """
 
-# pylint: disable=c0103, c0301, c0415, w0511, w0603
+# pylint: disable=c0103, c0301, c0415, w0511, w0106  #, w0603
 
 
 import os
@@ -28,10 +28,10 @@ __title__ = 'UnRen'
 __license__ = 'Apache 2.0'
 __author__ = 'F95sam, madeddy'
 __status__ = 'Development'
-__version__ = '0.5.3-alpha'
+__version__ = '0.6.0-alpha'
 
 
-_TOOLSTREAM = r"tool_placeholder"
+_TOOLSTREAM = "tool_placeholder"
 
 
 class UnRen:
@@ -144,19 +144,19 @@ class UnRen:
         if UnRen.count["rpa_f_found"] == 0:
             self.inf(0, "Could not find any valid target files in the directory tree.", m_sort='note')
 
-        rkm = self.rpakit.RKmain(self.game_pth, task="exp")
-        rkm.cfg_control()
+        rkm = self.rpakit.RkMain(self.game_pth, task="exp")
+        rkm.rk_control()
         # TODO: assert success
         self.inf(2, "Extracting of RPA files done.")
 
     def decompile(self):
         """Decompiles RenPy script files."""
         # TODO: reactivate rpyc decompiler if py3 is supported
-        self.inf(0, "For now does `unrpyc` not support python 3! Stay tuned for news on this.", m_sort='warn')
-    #     if UnRen.count["rpyc_f_found"] == 0:
-    #         self.inf(0, "Could not find any valid target files in the directory tree.", m_sort='note')
-    #     unrpyc.decompile_rpyc(game_pth)
-    #     self.inf(2, "Decompling of rpyc files done.")
+        self.inf(0, "For now `unrpyc` does not support python 3! Stay tuned for news on this.", m_sort='warn')
+        # if UnRen.count["rpyc_f_found"] == 0:
+        #     self.inf(0, "Could not find any valid target files in the directory tree.", m_sort='note')
+        # unrpyc.decompile_rpyc(self.game_pth)
+        # self.inf(2, "Decompling of rpyc files done.")
 
     # IDEA: We could also use the original variables in the rpy's and change them
     def console(self):
@@ -277,13 +277,10 @@ class UnRen:
 
     def find_valid_files(self):
         """Determines if rpa and rpyc files are present in the gamedir."""
-
         for fln in self.game_pth.rglob("*"):
             if fln.suffix in ['.rpa', '.rpi']:
-                # RPA_LST.append(fln)
                 UnRen.count["rpa_f_found"] += 1
             elif fln.suffix in ['.rpyc', '.rpymc']:
-                # RPYC_LST.append(fln)
                 UnRen.count["rpyc_f_found"] += 1
 
     def path_check(self):
@@ -340,6 +337,10 @@ def ur_main(cfg):
     """This executes all program steps, validity checks on the args and prints
     self.infos messages if the default args are used.
     """
+    if not sys.version_info[:2] >= (3, 6):
+        raise Exception("Must be executed in Python 3.6 or later.\n"
+                        f"You are running {sys.version}")
+
     _ur = UnRen(target=cfg.targetpath, verbose=cfg.verbose)
 
     _ur.path_check()
@@ -356,6 +357,4 @@ def ur_main(cfg):
 
 
 if __name__ == '__main__':
-    if not sys.version_info[:2] >= (3, 6):
-        raise f"Must be executed in Python 3.6 or later. You are running {sys.version}"
     ur_main(parse_args())
