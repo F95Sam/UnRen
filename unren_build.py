@@ -28,7 +28,7 @@ __title__ = 'UnRen builder'
 __license__ = 'Apache-2'
 __author__ = 'madeddy'
 __status__ = 'Development'
-__version__ = '0.9.0-alpha'
+__version__ = '0.10.0-alpha'
 
 
 import os
@@ -42,7 +42,6 @@ import base64
 # Support func; used by multiple steps
 def embed_data(dst_file, data, placeholder):
     """Embed's the given data in a target script."""
-    print(f"dst: {dst_file}  ph: {placeholder}")
     with dst_file.open('rb+') as ofi:
         file_data = ofi.read()
         ofi.seek(0)
@@ -53,9 +52,9 @@ def embed_data(dst_file, data, placeholder):
 # Step 1
 def get_rpy_cfg(src_rpy):
     """Reads the RenPy cfg data from a rpy file."""
-    with pt(src_rpy).open('rb') as ofi:
+    with pt('rpy_embeds').joinpath(src_rpy).open('rb') as ofi:
         lines = ofi.readlines()
-        cfg_txt = lines[5:]
+        cfg_txt = (8 * b' ').join(lines[4:]).rstrip()
     return cfg_txt
 
 
