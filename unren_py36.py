@@ -28,7 +28,7 @@ __title__ = 'UnRen'
 __license__ = 'Apache 2.0'
 __author__ = 'F95sam, madeddy'
 __status__ = 'Development'
-__version__ = '0.7.0-alpha'
+__version__ = '0.8.0-alpha'
 
 
 _TOOLSTREAM = "tool_placeholder"
@@ -158,14 +158,12 @@ class UnRen:
         # unrpyc.decompile_rpyc(self.game_pth)
         # self.inf(2, "Decompling of rpyc files done.")
 
-    # IDEA: We could also use the original variables in the rpy's and change them
+    # WARNING: Never change the placeholder formating/indentation!
     def console(self):
         """Enables the RenPy console and developer menu."""
-        console_id = "# Developer menu and console"
-        console_code = """
-            # ### Developer menu and console ###
-                config.developer = True
-                config.console = True
+        console_id = "# Developer menu and console #"
+        console_code = """\
+        console_placeholder
         """
         console_inf = "Added access to developer menu and debug console with the \
                       following keybindings:\nConsole: SHIFT+O\nDev Menu: SHIFT+D"
@@ -173,54 +171,31 @@ class UnRen:
 
     def quick(self):
         """Enable Quick Save and Quick Load."""
-        quick_id = "# Quick save and load"
-        quick_code = """
-            # ### Quick save and load ###
-                try:
-                    config.underlay[0].keymap['quickLoad'] = QuickLoad()
-                    config.keymap['quickLoad'] = 'K_F5'
-                    config.underlay[0].keymap['quickSave'] = QuickSave()
-                    config.keymap['quickSave'] = 'K_F9'
-                except:
-                    print("Error: Quicksave/-load not working.")
+        quick_id = "# Quick save and load #"
+        quick_code = """\
+        quick_placeholder
         """
         quick_inf = "Added Quick load, -save with the following keybindings:\
                     \nQuick Save: F5\nQuick Load: F9"
         self.write_rpy_cfg(quick_id, quick_code, quick_inf)
 
-    def skip(self):
-        """Enables skipping of unseen content."""
-        skip_id = "# Skipping"
-        skip_code = """
-            # ### Skipping ###
-                _preferences.skip_unseen = True
-                renpy.game.preferences.skip_unseen = True
-                renpy.config.allow_skipping = True
-                renpy.config.fast_skipping = True
-        """
-        skip_inf = "Added the abbility to skip all text using TAB and CTRL keys."
-        self.write_rpy_cfg(skip_id, skip_code, skip_inf)
-
     def rollback(self):
         """Enable rollback fuctionality."""
-        rollback_id = "# Rollback"
-        rollback_code = """
-            # ### Rollback ###
-                renpy.config.rollback_enabled = True
-                renpy.config.hard_rollback_limit = 256
-                renpy.config.rollback_length = 256
-
-                def unren_noblock( *args, **kwargs ):
-                    return
-                renpy.block_rollback = unren_noblock
-
-                try:
-                    config.keymap['rollback'] = [ 'K_PAGEUP', 'repeat_K_PAGEUP', 'K_AC_BACK', 'mousedown_4' ]
-                except:
-                    print("Error: Rollback not working.")
+        rollback_id = "# Rollback #"
+        rollback_code = """\
+        rollback_placeholder
         """
         rollback_inf = "Rollback with use of the mousewheel is now activated."
         self.write_rpy_cfg(rollback_id, rollback_code, rollback_inf)
+
+    def skip(self):
+        """Enables skipping of unseen content."""
+        skip_id = "# Skipping #"
+        skip_code = """\
+        skip_placeholder
+        """
+        skip_inf = "Added the abbility to skip all text using TAB and CTRL keys."
+        self.write_rpy_cfg(skip_id, skip_code, skip_inf)
 
     def all_opts(self):
         """Runs all available options."""
