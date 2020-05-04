@@ -28,15 +28,31 @@ __title__ = 'UnRen'
 __license__ = 'Apache 2.0'
 __author__ = 'F95sam, madeddy'
 __status__ = 'Development'
-__version__ = '0.8.0-alpha'
+__version__ = '0.9.0-alpha'
 
 
-_TOOLSTREAM = "tool_placeholder"
+class UrP:
+    """This class exists so we can hold all the placeholder/embed vars in a
+    shared location at script head."""
 
-
-class UnRen:
+    _toolstream = "tool_placeholder"
+    console_code = """\
+    console_placeholder
     """
-    UnRen class for all the wanted tasks. Args:
+    quick_code = """\
+    quick_placeholder
+    """
+    rollback_code = """\
+    rollback_placeholder
+    """
+    skip_code = """\
+    skip_placeholder
+    """
+
+
+class UnRen(UrP):
+    """
+    UnRen main class for all the core functionality. Parameters:
         Positional: {targetpath} takes a `pathlike` or string
         Keyword: {verbose=[0|1|2]} information output level; defaults to 1
     """
@@ -162,40 +178,28 @@ class UnRen:
     def console(self):
         """Enables the RenPy console and developer menu."""
         console_id = "# Developer menu and console #"
-        console_code = """\
-        console_placeholder
-        """
         console_inf = "Added access to developer menu and debug console with the \
                       following keybindings:\nConsole: SHIFT+O\nDev Menu: SHIFT+D"
-        self.write_rpy_cfg(console_id, console_code, console_inf)
+        self.write_rpy_cfg(console_id, UnRen.console_code, console_inf)
 
     def quick(self):
         """Enable Quick Save and Quick Load."""
         quick_id = "# Quick save and load #"
-        quick_code = """\
-        quick_placeholder
-        """
         quick_inf = "Added Quick load, -save with the following keybindings:\
                     \nQuick Save: F5\nQuick Load: F9"
-        self.write_rpy_cfg(quick_id, quick_code, quick_inf)
+        self.write_rpy_cfg(quick_id, UnRen.quick_code, quick_inf)
 
     def rollback(self):
         """Enable rollback fuctionality."""
         rollback_id = "# Rollback #"
-        rollback_code = """\
-        rollback_placeholder
-        """
         rollback_inf = "Rollback with use of the mousewheel is now activated."
-        self.write_rpy_cfg(rollback_id, rollback_code, rollback_inf)
+        self.write_rpy_cfg(rollback_id, UnRen.rollback_code, rollback_inf)
 
     def skip(self):
         """Enables skipping of unseen content."""
         skip_id = "# Skipping #"
-        skip_code = """\
-        skip_placeholder
-        """
         skip_inf = "Added the abbility to skip all text using TAB and CTRL keys."
-        self.write_rpy_cfg(skip_id, skip_code, skip_inf)
+        self.write_rpy_cfg(skip_id, UnRen.skip_code, skip_inf)
 
     def all_opts(self):
         """Runs all available options."""
@@ -234,8 +238,8 @@ class UnRen:
     def toolstream_handler(self):
         """Loads and unpacks the stream to usable source state in a tempdir."""
 
-        store = pickle.loads(base64.b85decode(_TOOLSTREAM))
-    	# NOTE: tempdir must be deleted by user or stays e.g. shutil.rmtree(pth)
+        store = pickle.loads(base64.b85decode(UnRen._toolstream))
+        # NOTE: tempdir must be deleted by user or stays e.g. shutil.rmtree(pth)
         self.ur_tmp_dir = tempfile.mkdtemp(prefix='UnRen.', suffix='.tmp')
 
         for rel_fp, f_data in store.items():
