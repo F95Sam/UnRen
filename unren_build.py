@@ -27,7 +27,7 @@ __title__ = 'UnRen builder'
 __license__ = 'Apache-2'
 __author__ = 'madeddy'
 __status__ = 'Development'
-__version__ = '0.11.2-alpha'
+__version__ = '0.11.3-alpha'
 
 
 import os
@@ -112,8 +112,9 @@ class UrBuild:
 
             rel_fp = pt(f_item).relative_to(UrBuild.tools_pth)
             store[str(rel_fp)] = d_chunk
-        # NOTE: To reduce size of output a compressor(zlib, lzma...) can be used in
-        # the middel of pickle and the encoder; Not at the end - isn't py code safe
+
+        # NOTE: To reduce size of output a compressor(zlib, lzma...) can be
+        # used between pickle and encoder; At the end it is NOT py-code safe
         self.toolstream = base64.b85encode(pickle.dumps(store))
         self.embed_dct[plh] = self.toolstream
 
@@ -160,7 +161,7 @@ def parse_args():
         if not args.task:
             aps.print_help()
             raise argparse.ArgumentError(args.task, "\nNo task requested; "
-                                         "either -1, -2 or -3 is required.")
+                                         "either -makepy or -makecmd is required.")
     aps = argparse.ArgumentParser(
         description="Helper app to build the release versions of UnRen.",
         epilog="")
@@ -169,7 +170,7 @@ def parse_args():
                         dest='task',
                         action='store_const',
                         const='part_1',
-                        help="Executes step 1(a&b): embeds the RenPy config snippeds \
+                        help="Executes step 1: embeds the RenPy config snippeds \
                         and tools into the raw Python scripts.")
     switch.add_argument('-makecmd',
                         dest='task',
@@ -194,11 +195,11 @@ def build_main(cfg):
     # Step 1a & 1b  embed rpy cfg & tools in the raw py files
     if cfg.task == 'part_1':
         urb.embed2py()
+        print("\nUnRen builder:>> Embed `snippeds and tools in py` task completed!\n")
     # Step 2 - embed py files in the cmd file
     elif cfg.task == 'part_2':
         urb.py2cmd()
-
-    print("\nUnRen builder:>> Task completed!\n")
+        print("\nUnRen builder:>> Embed `py in cmd` task completed!\n")
 
 
 if __name__ == '__main__':
