@@ -10,7 +10,7 @@ Abbilitys are unpacking rpa files, decompiling rpyc(py2!) files and enabling res
 reactivating diverse RenPy functions by script commands.
 """
 
-# pylint: disable=c0103, c0301, c0415, w0511, w0106  #, w0603
+# pylint: disable=c0103, c0301, c0415, w0511, w0106
 
 
 import os
@@ -28,7 +28,7 @@ __title__ = 'UnRen'
 __license__ = 'Apache 2.0'
 __author__ = 'F95sam, madeddy'
 __status__ = 'Development'
-__version__ = '0.9.0-alpha'
+__version__ = '0.9.1-alpha'
 
 
 class UrP:
@@ -89,7 +89,6 @@ class UnRen(UrP):
                  '0': 'all_opts',
                  'x': '_exit'}
 
-
     def __init__(self, target='', verbose=None):
         if verbose is not None:
             UnRen.verbosity = verbose
@@ -99,7 +98,6 @@ class UnRen(UrP):
         self.ur_tmp_dir = None
         self.rpakit = None
         # self.unrpyc = None  # NOTE: Unneeded till it supports py3
-
 
     # FIXME: newline with textwrap... how?
     # test inf functionality some more
@@ -115,7 +113,8 @@ class UnRen(UrP):
             elif m_sort == 'warn':
                 ind1 = f"{cls.name}:\x1b[31m WARNING \x1b[0m> "
                 ind2 = " " * 17
-            print(textwrap.fill(msg, width=90, initial_indent=ind1, subsequent_indent=ind2, replace_whitespace=False))
+            print(textwrap.fill(msg, width=90, initial_indent=ind1,
+                                subsequent_indent=ind2, replace_whitespace=False))
 
     def import_tools(self):
         """This runs a deferred import of the tools due to the tools just usable after our script runs already."""
@@ -203,7 +202,7 @@ class UnRen(UrP):
 
     def all_opts(self):
         """Runs all available options."""
-        runall_l = {getattr(self, val) for key, val in UnRen.menu_opts.items() \
+        runall_l = {getattr(self, val) for key, val in UnRen.menu_opts.items()
                     if key not in "0x"}
         [item() for item in runall_l]
         self.inf(2, "All requested options finished.")
@@ -249,7 +248,7 @@ class UnRen(UrP):
             with f_pth.open('wb') as ofi:
                 ofi.write(f_data)
         # control print
-        return self.ur_tmp_dir
+        # return self.ur_tmp_dir
 
     def find_valid_files(self):
         """Determines if rpa and rpyc files are present in the gamedir."""
@@ -320,11 +319,12 @@ def ur_main(cfg):
     _ur.path_check()
     _ur.find_valid_files()
     # control print var assignm. can go
-    ur_tmp_d = _ur.toolstream_handler()
+    # ur_tmp_d = _ur.toolstream_handler()
+    _ur.toolstream_handler()
     _ur.import_tools()
     # # control print testing if tools in temp
-    for item in pt(ur_tmp_d).iterdir():
-        print(item)
+    # for item in pt(ur_tmp_d).iterdir():
+    #     print(item)
     _ur.main_menu()
 
     print("\nMain function completed! This should not happen.\n")
