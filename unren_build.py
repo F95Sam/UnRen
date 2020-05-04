@@ -21,14 +21,14 @@ Embeds the previously prepaired python script into a Win command file.
 """
 
 
-# pylint: disable=c0103, c0301, w0511, w0611, w0613
+# pylint: disable=c0103, C0301, W0511, w0611, w0613
 
 
 __title__ = 'UnRen builder'
 __license__ = 'Apache-2'
 __author__ = 'madeddy'
 __status__ = 'Development'
-__version__ = '0.11.0-alpha'
+__version__ = '0.11.1-alpha'
 
 
 import os
@@ -39,14 +39,6 @@ import pickle
 import base64
 
 
-# Support func; used by multiple steps
-def embed_data(dst_file, data, placeholder):
-    """Embed's the given data in a target script."""
-    with dst_file.open('rb+') as ofi:
-        file_data = ofi.read()
-        ofi.seek(0)
-        ofi.truncate()
-        ofi.write(file_data.replace(placeholder, data))
 class UrBuild:
     """
     Constructs from raw base files and different code parts the final
@@ -147,8 +139,6 @@ class UrBuild:
 
             for plh, emb in self.embed_dct.items():
                 self.embed_data(plh, emb)
-
-            # print(f"tmp: {self._tmp}  pl: {placeholder}")
             self.write_filedata(dst_py, self._tmp)
 
     # Step 2: Optional (just for the win cmd)
@@ -170,7 +160,7 @@ def parse_args():
         """Helper function to determine if a task is choosen."""
         if not args.task:
             aps.print_help()
-            raise argparse.ArgumentError(args.task, f"\nNo task requested; " \
+            raise argparse.ArgumentError(args.task, "\nNo task requested; "
                                          "either -1, -2 or -3 is required.")
     aps = argparse.ArgumentParser(
         description="Helper app to build the release versions of UnRen.",
