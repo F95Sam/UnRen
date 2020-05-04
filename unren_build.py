@@ -28,7 +28,7 @@ __title__ = 'UnRen builder'
 __license__ = 'Apache-2'
 __author__ = 'madeddy'
 __status__ = 'Development'
-__version__ = '0.10.0-alpha'
+__version__ = '0.11.0-alpha'
 
 
 import os
@@ -47,95 +47,121 @@ def embed_data(dst_file, data, placeholder):
         ofi.seek(0)
         ofi.truncate()
         ofi.write(file_data.replace(placeholder, data))
+class UrBuild:
+    """
+    Constructs from raw base files and different code parts the final
+    executable scripts.
+    (Class acts more as wrapper for easier var sharing without global.)
+    """
 
+    name = 'UnRen builder'
+    # config  # hm...absolute or relative paths?
+    tools_pth = pt('ur_tools').resolve(strict=True)
+    snipped_pth = pt('ur_embed_rpy').resolve(strict=True)
+    embed_lib = {b'console_placeholder': 'dev_con.rpy',
+                 b'quick_placeholder': 'quick.rpy',
+                 b'rollback_placeholder': 'rollback.rpy',
+                 b'skip_placeholder': 'skip.rpy'}
 
-# Step 1
-def get_rpy_cfg(src_rpy):
-    """Reads the RenPy cfg data from a rpy file."""
-    with pt('rpy_embeds').joinpath(src_rpy).open('rb') as ofi:
-        lines = ofi.readlines()
-        cfg_txt = (8 * b' ').join(lines[4:]).rstrip()
-    return cfg_txt
+    raw_py2 = 'ur_raw_27.py'
+    raw_py3 = 'ur_raw_36.py'
+    embed_py2 = 'ur_embed_27.py'
+    embed_py3 = 'ur_embed_36.py'
+    base_cmd = pt('ur_base.cmd').resolve(strict=True)
 
+    dst_py2 = 'unren_py27.py'
+    dst_py3 = 'unren_py36.py'
+    dst_cmd2 = 'unren_27.cmd'
+    dst_cmd3 = 'unren_36.cmd'
 
-def embed_rpycfg(dst_py):
-    """Gets the cfg text from every listed file and embeds it in the target py."""
-    # TODO: placeholders in main py script
-    rpy_lib = {"dev_con.rpy": b"console_placeholder",
-               "quick.rpy": b"quick_placeholder",
-               "rollback.rpy": b"rollback_placeholder",
-               "skip.rpy": b"skip_placeholder"}
-    for rpy_cfg, placeholder in rpy_lib.items():
-        rpycfg_txt = get_rpy_cfg(rpy_cfg)
-        embed_data(dst_py, rpycfg_txt, placeholder)
+    def __init__(self):
+        self.embed_dct = {}
+        self.tool_lst = []
+        self.toolstream = None
+        self._tmp = None
 
+    def read_filedata(self, src_file):
+        """Opens a given file and returns the content as bytes type."""
+        with src_file.open('rb') as ofi:
+            self._tmp = ofi.read()
+            return self._tmp  # needed for cmd_stream
 
-def rpycfg2py(src_py2, src_py3):
-    """Embeds the rpy cfg snippeds in the py files."""
-    # embed_rpycfg(src_py2)
-    embed_rpycfg(src_py3)
+    def embed_data(self, placeholder, embed_data):
+        """Embed's the given data in target datastream."""
+        self._tmp = self._tmp.replace(placeholder, embed_data)
 
+    @staticmethod
+    def write_filedata(dst_file, data):
+        """Writes a new file with given content."""
+        with dst_file.open('wb') as ofi:
+            ofi.write(data)
 
-# Step 2; pack tools to py
-def tools_packer(tools_pth, pth_lst):
-    """Packs the tools to a pickled and encoded stream."""
-    store = {}
-    for f_item in pth_lst:
-        with pt(f_item).open('rb') as ofi:
-            d_chunk = ofi.read()
+    # Step 1a
+    @staticmethod
+    def read_rpy_cfg(src_rpy):
+        """Reads the RenPy cfg data from a rpy file."""
+        with pt(UrBuild.snipped_pth).joinpath(src_rpy).open('rb') as ofi:
+            lines = ofi.readlines()
+            cfg_txt = (8 * b' ').join(lines[4:]).rstrip()
+        return cfg_txt
 
-        rel_fp = pt(f_item).relative_to(tools_pth)
-        store[str(rel_fp)] = d_chunk
-    # NOTE: To reduce size of output a compressor(zlib, lzma...) can be used in the middel of pickle and the encoder; Not at the end - isn't py code safe
-    stream = base64.b85encode(pickle.dumps(store))
-    return stream
+    def get_rpy_embeds(self):
+        """Gets the cfg text from every listed file and embeds it in the target py."""
+        for plh, src_rpy in UrBuild.embed_lib.items():
+            self.embed_dct[plh] = self.read_rpy_cfg(src_rpy)
 
+    # Step 1b; pack tools to py
+    def tools_packer(self):
+        """Packs the tools to a pickled and encoded stream."""
+        plh = b"tool_placeholder"
+        store = {}
+        for f_item in self.tool_lst:
+            with pt(f_item).open('rb') as ofi:
+                d_chunk = ofi.read()
 
-def path_walker(tools_pth):
-    """Walks the tools directory and collects a list of py files."""
-    tool_lst = []
-    for fpath, _subdirs, files in os.walk(tools_pth):
-        for fln in files:
-            if pt(fln).suffix in ['.py', '.pyc']:
-                tool_lst.append(pt(fpath).joinpath(fln))
-    return tool_lst
+            rel_fp = pt(f_item).relative_to(UrBuild.tools_pth)
+            store[str(rel_fp)] = d_chunk
+        # NOTE: To reduce size of output a compressor(zlib, lzma...) can be used in
+        # the middel of pickle and the encoder; Not at the end - isn't py code safe
+        self.toolstream = base64.b85encode(pickle.dumps(store))
+        self.embed_dct[plh] = self.toolstream
 
+    def path_walker(self):
+        """Walks the tools directory and collects a list of py files."""
+        for fpath, _subdirs, files in os.walk(UrBuild.tools_pth):
+            for fln in files:
+                if pt(fln).suffix in ['.py', '.pyc']:
+                    self.tool_lst.append(pt(fpath).joinpath(fln))
 
-def tool2py(tools_pth, dst_py2, dst_py3):
-    """Constructs the tools stream and embeds it in the py file."""
-    placeholder = b"tool_placeholder"
-    packlist = path_walker(tools_pth)
-    toolstream = tools_packer(tools_pth, packlist)
-    # embed_data(dst_py2, toolstream, placeholder)
-    embed_data(dst_py3, toolstream, placeholder)
+    def embed2py(self):
+        """Embeds the rpy cfg snippeds in the py files.
+        Constructs the tools stream and embeds it in the py file."""
+        self.get_rpy_embeds()  # must be before `tools_packer`
+        self.path_walker()
+        self.tools_packer()
 
+        for _key, _val in dict({UrBuild.raw_py2: UrBuild.dst_py2,
+                                UrBuild.raw_py3: UrBuild.dst_py3}).items():
+            raw_py, dst_py = pt(_key), pt(_val)
+            self.read_filedata(raw_py)
 
-# Step 3: Optional (just for the win cmd)
-def duplicate_file(dst_file, data):
-    """Writes a new file with given content."""
-    with dst_file.open('wb') as ofi:
-        ofi.write(data)
+            for plh, emb in self.embed_dct.items():
+                self.embed_data(plh, emb)
 
+            # print(f"tmp: {self._tmp}  pl: {placeholder}")
+            self.write_filedata(dst_py, self._tmp)
 
-def get_filedata(src_file):
-    """Opens a given file and returns the content as bytes type."""
-    with src_file.open('rb') as ofi:
-        file_data = ofi.read()
-    return file_data
-
-
-def py2cmd(embed_py2, embed_py3, base_cmd, dst_cmd2, dst_cmd3):
-    """Constructs the py stream and embeds it in the cmd file."""
-    placeholder = "batch_placeholder"
-    cmd_stream = get_filedata(base_cmd)
-
-    # duplicate_file(dst_cmd2, cmd_stream)
-    # py_stream = get_filedata(embed_py2)
-    # embed_data(cmd_stream, py_stream, placeholder)
-
-    duplicate_file(dst_cmd3, cmd_stream)
-    py_stream = get_filedata(embed_py3)
-    embed_data(cmd_stream, py_stream, placeholder)
+    # Step 2: Optional (just for the win cmd)
+    def py2cmd(self):
+        """Constructs the py stream and embeds it in the cmd file."""
+        batch_plh = "batch_placeholder"
+        for _key, _val in dict({UrBuild.embed_py2: UrBuild.dst_cmd2,
+                                UrBuild.embed_py3: UrBuild.dst_cmd3}).items():
+            embed_py, dst_cmd = pt(_key), pt(_val)
+            embed_py_stream = self.read_filedata(embed_py)
+            self.read_filedata(UrBuild.base_cmd)
+            self.embed_data(batch_plh, embed_py_stream)
+            self.write_filedata(dst_cmd, self._tmp)
 
 
 def parse_args():
@@ -149,21 +175,18 @@ def parse_args():
     aps = argparse.ArgumentParser(
         description="Helper app to build the release versions of UnRen.",
         epilog="")
-    aps.add_argument('-1',
-                     dest='task',
-                     action='store_const',
-                     const='part_1',
-                     help="Execute step 1 - embeds the RenPy config snippeds.")
-    aps.add_argument('-2',
-                     dest='task',
-                     action='store_const',
-                     const='part_2',
-                     help="Execute step 2 - embeds the tools into the Python scripts.")
-    aps.add_argument('-3',
-                     dest='task',
-                     action='store_const',
-                     const='part_3',
-                     help="Execute step 3 - embeds the Python script into the cmd.")
+    switch = aps.add_mutually_exclusive_group()
+    switch.add_argument('-makepy',
+                        dest='task',
+                        action='store_const',
+                        const='part_1',
+                        help="Executes step 1(a&b): embeds the RenPy config snippeds \
+                        and tools into the raw Python scripts.")
+    switch.add_argument('-makecmd',
+                        dest='task',
+                        action='store_const',
+                        const='part_2',
+                        help="Execute step 2: embeds the Python script into the cmd.")
     aps.add_argument('--version',
                      action='version',
                      version=f'%(prog)s : { __title__} {__version__}')
@@ -177,25 +200,14 @@ def build_main(cfg):
     if not sys.version_info[:2] >= (3, 6):
         raise Exception("Must be executed in Python 3.6 or later.\n"
                         f"You are running {sys.version}")
-    # config  # hm...absolute or relative paths?
-    tools_pth = pt('ur_tools').resolve(strict=True)
-    dst_py2 = pt('unren_py27.py').resolve(strict=True)
-    dst_py3 = pt('unren_py36.py').resolve(strict=True)
-    embed_py2 = pt('unren_py27_embed.py').resolve(strict=True)
-    embed_py3 = pt('unren_py36_embed.py').resolve(strict=True)
-    base_cmd = pt('unren_base.cmd').resolve(strict=True)
-    dst_cmd2 = pt('unren_27.cmd')
-    dst_cmd3 = pt('unren_36.cmd')
 
-    # Step 1
+    urb = UrBuild()
+    # Step 1a & 1b  embed rpy cfg & tools in the raw py files
     if cfg.task == 'part_1':
-        rpycfg2py(dst_py2, dst_py3)
-    # Step 2 - embed tools in the py files
+        urb.embed2py()
+    # Step 2 - embed py files in the cmd file
     elif cfg.task == 'part_2':
-        tool2py(tools_pth, dst_py2, dst_py3)
-    # Step 3 - embed py files in the cmd file
-    elif cfg.task == 'part_3':
-        py2cmd(embed_py2, embed_py3, base_cmd, dst_cmd2, dst_cmd3)
+        urb.py2cmd()
 
     print("\nUnRen builder:>> Task completed!\n")
 
