@@ -20,14 +20,11 @@ Embeds the previously prepaired python script into a Win command file.
 """
 
 
-# pylint: disable=c0103, C0301, W0511, w0611, w0613
-
-
 __title__ = 'UnRen builder'
 __license__ = 'Apache-2'
 __author__ = 'madeddy'
 __status__ = 'Development'
-__version__ = '0.11.3-alpha'
+__version__ = '0.12.0-alpha'
 
 
 import os
@@ -144,7 +141,7 @@ class UrBuild:
     # Step 2: Optional (just for the win cmd)
     def py2cmd(self):
         """Constructs the py stream and embeds it in the cmd file."""
-        batch_plh = "batch_placeholder"
+        batch_plh = b"batch_placeholder"
         for _key, _val in dict({UrBuild.embed_py2: UrBuild.dst_cmd2,
                                 UrBuild.embed_py3: UrBuild.dst_cmd3}).items():
             embed_py, dst_cmd = pt(_key), pt(_val)
