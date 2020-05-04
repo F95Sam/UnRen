@@ -6,17 +6,16 @@ into the main script.
 
 Requirements: py 3.6
 Step 1:
-Reads the content of few RenPy script files and embeds it into the py files.
+Reads the content of few RenPy script files and stores it temporary. Now are the
+tool files collected by a dir walker, filepath and data are collected as pairs in
+a dict. The dict is then pickled (#1), base85 encoded (#2) and also stored.
 
-Step 2:
-The files get collected by a dir walker, filepath and data are stored as
-k: v in a dict. The dict is then pickled (#1), base85 encoded (#2) and
-embedded in a prepaired placeholder location in the main script.
-
+The different data streams are now embedded in prepaired placeholder locations in
+the main script.
 #1 to get the bytestream the encoder func wants
 #2 A compress. algorythm like zip outputs a codestream which confuses python(breaks)
 
-Step 3:
+Step 2:
 Embeds the previously prepaired python script into a Win command file.
 """
 
@@ -28,7 +27,7 @@ __title__ = 'UnRen builder'
 __license__ = 'Apache-2'
 __author__ = 'madeddy'
 __status__ = 'Development'
-__version__ = '0.11.1-alpha'
+__version__ = '0.11.2-alpha'
 
 
 import os
