@@ -69,3 +69,8 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# user
+_storage/**
+ur_tools/**
+operable/**
