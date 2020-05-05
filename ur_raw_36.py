@@ -28,7 +28,7 @@ __title__ = 'UnRen'
 __license__ = 'Apache 2.0'
 __author__ = 'F95sam, madeddy'
 __status__ = 'Development'
-__version__ = '0.11.0-alpha'
+__version__ = '0.11.1-alpha'
 
 
 class UrP:
@@ -150,7 +150,7 @@ class UnRen(UrP):
             self.inf(2, cfg_inf)
 
     def extract(self):
-        """Extracts content from RenPy archives."""
+        """Extracts content from RenPy archives by use of Rpa Kit."""
         if UnRen.count["rpa_f_found"] == 0:
             self.inf(0, "Could not find any valid target files in the directory tree.", m_sort='note')
 
@@ -172,13 +172,13 @@ class UnRen(UrP):
     def console(self):
         """Enables the RenPy console and developer menu."""
         console_inf = "Added access to developer menu and debug console with the \
-                      following keybindings:\nConsole: SHIFT+O\nDev Menu: SHIFT+D"
+        following keybindings: Console: SHIFT+O; Dev Menu: SHIFT+D"
         self.write_rpy_cfg(UnRen.console_code, console_inf)
 
     def quick(self):
         """Enable Quick Save and Quick Load."""
-        quick_inf = "Added Quick load, -save with the following keybindings:\
-                    \nQuick Save: F5\nQuick Load: F9"
+        quick_inf = "Added ability to quick-load and -save with the following \
+        keybindings: Quick Save: F5; Quick Load: F9"
         self.write_rpy_cfg(UnRen.quick_code, quick_inf)
 
     def rollback(self):
