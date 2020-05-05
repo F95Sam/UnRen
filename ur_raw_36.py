@@ -28,7 +28,7 @@ __title__ = 'UnRen'
 __license__ = 'Apache 2.0'
 __author__ = 'F95sam, madeddy'
 __status__ = 'Development'
-__version__ = '0.9.1-alpha'
+__version__ = '0.10.0-alpha'
 
 
 class UrP:
@@ -140,17 +140,16 @@ class UnRen(UrP):
             print(textwrap.dedent(header_txt), file=ofi)
 
     # IDEA: Rework write config functionality to less complexity, fewer methods...
-    def write_rpy_cfg(self, cfg_id, cfg_code, cfg_inf):
+    def write_rpy_cfg(self, cfg_code, cfg_inf):
         """Writes given text to the file."""
         outfile = pt(self.game_pth).joinpath("unren_cfg.rpy").resolve()
         if not outfile.exists():
             self.make_rpy_cfg(outfile)
 
         with outfile.open('r+') as ofi:
-            for line in ofi:
-                if cfg_id in line:
-                    self.inf(2, "Option already active. Skipped.")
-                    return
+            if cfg_code[12:40] in ofi.read():
+                self.inf(1, "Option already active. Skipped.")
+                return
             ofi.write(textwrap.dedent(cfg_code))
             self.inf(2, cfg_inf)
 
@@ -176,29 +175,25 @@ class UnRen(UrP):
     # WARNING: Never change the placeholder formating/indentation!
     def console(self):
         """Enables the RenPy console and developer menu."""
-        console_id = "# Developer menu and console #"
         console_inf = "Added access to developer menu and debug console with the \
                       following keybindings:\nConsole: SHIFT+O\nDev Menu: SHIFT+D"
-        self.write_rpy_cfg(console_id, UnRen.console_code, console_inf)
+        self.write_rpy_cfg(UnRen.console_code, console_inf)
 
     def quick(self):
         """Enable Quick Save and Quick Load."""
-        quick_id = "# Quick save and load #"
         quick_inf = "Added Quick load, -save with the following keybindings:\
                     \nQuick Save: F5\nQuick Load: F9"
-        self.write_rpy_cfg(quick_id, UnRen.quick_code, quick_inf)
+        self.write_rpy_cfg(UnRen.quick_code, quick_inf)
 
     def rollback(self):
         """Enable rollback fuctionality."""
-        rollback_id = "# Rollback #"
         rollback_inf = "Rollback with use of the mousewheel is now activated."
-        self.write_rpy_cfg(rollback_id, UnRen.rollback_code, rollback_inf)
+        self.write_rpy_cfg(UnRen.rollback_code, rollback_inf)
 
     def skip(self):
         """Enables skipping of unseen content."""
-        skip_id = "# Skipping #"
         skip_inf = "Added the abbility to skip all text using TAB and CTRL keys."
-        self.write_rpy_cfg(skip_id, UnRen.skip_code, skip_inf)
+        self.write_rpy_cfg(UnRen.skip_code, skip_inf)
 
     def all_opts(self):
         """Runs all available options."""
