@@ -28,7 +28,7 @@ __title__ = 'UnRen'
 __license__ = 'Apache 2.0'
 __author__ = 'F95sam, madeddy'
 __status__ = 'Development'
-__version__ = '0.11.1-alpha'
+__version__ = '0.11.2-alpha'
 
 
 class UrP:
@@ -57,32 +57,38 @@ class UnRen(UrP):
     verbosity = 1
     count = {'rpa_f_found': 0, 'rpyc_f_found': 0}
 
-    menu_screen = fr"""
+    tui_menu_logo = fr"""
        __  __      ____
       / / / /___  / __ \___  ____
      / / / / __ \/ /_/ / _ \/ __ \
     / /_/ / / / / _, _/  __/ / / /
     \____/_/ /_/_/ |_|\___/_/ /_/  Version {__version__}
-
-      Available Options:
-
-      1) Extract all RPA packages
-      2) Decompile rpyc files
-      3) Enable Console and Developer Menu
-      4) Enable Quick Save and Quick Load
-      5) Force enable skipping of unseen content
-      6) Force enable rollback (scroll wheel)
-      0) All six options above
-
-      x) Exit this application
     """
-    menu_opts = {'1': 'extract',
-                 '2': 'decompile',
+    tui_menu_opts = f"""
+      \x1b[03mAvailable Options:\x1b[0m
+
+      \x1b[34m0\x1b[0m) Extract all RPA packages
+      \x1b[34m1\x1b[0m) Decompile rpyc files
+
+      \x1b[32m3\x1b[0m) Enable Console and Developer Menu
+      \x1b[32m4\x1b[0m) Enable Quick Save and Quick Load
+      \x1b[32m5\x1b[0m) Force enable skipping of unseen content
+      \x1b[32m6\x1b[0m) Force enable rollback (scroll wheel)
+
+      \x1b[00ma\x1b[0m) All six options above
+      \x1b[33mx\x1b[0m) Exit this application
+    """
+    menu_opts = {'0': 'extract',
+                 '1': 'decompile',
+                 # '2': 'unused',
                  '3': 'console',
                  '4': 'quick',
                  '5': 'skip',
                  '6': 'rollback',
-                 '0': 'all_opts',
+                 # '7': 'unused',
+                 # '8': 'unused',
+                 # '9': 'unused',
+                 'a': 'all_opts',
                  'x': '_exit'}
 
     def __init__(self, target='', verbose=None):
@@ -212,7 +218,7 @@ class UnRen(UrP):
     def main_menu(self):
         """Displays a console text menu and allows choices from the available options."""
         while True:
-            print(f"\n\n{UnRen.menu_screen}\n\n")
+            print(f"\n\n{UnRen.tui_menu_logo}{UnRen.tui_menu_opts}\n\n")
             userinp = input("Type the corresponding key character to the task you want to execute: ").lower()
             if userinp not in UnRen.menu_opts.keys():
                 self.inf(0, "\x1b[42mInvalid\x1b[0m key used. Try again.")
