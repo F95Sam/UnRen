@@ -24,7 +24,7 @@ __title__ = 'UnRen builder'
 __license__ = 'Apache-2'
 __author__ = 'madeddy'
 __status__ = 'Development'
-__version__ = '0.12.0-alpha'
+__version__ = '0.12.1-alpha'
 
 
 import os
@@ -89,8 +89,10 @@ class UrBuild:
     def read_rpy_cfg(src_rpy):
         """Reads the RenPy cfg data from a rpy file."""
         with pt(UrBuild.snipped_pth).joinpath(src_rpy).open('rb') as ofi:
-            lines = ofi.readlines()
-            cfg_txt = (8 * b' ').join(lines[4:]).rstrip()
+            pre_lines = [8 * b' ' + line if line != b'\n' else
+                         line for line in ofi.readlines()[4:]]
+            pre_lines[:0] = [b'\n']
+            cfg_txt = b''.join(pre_lines).rstrip()
         return cfg_txt
 
     def get_rpy_embeds(self):
