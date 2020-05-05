@@ -2,7 +2,7 @@
 # Config changes; written by UnRen
 
 init 999 python:
-# ### Quick save and load ###
+# ######### Quick save and load ###########
     try:
         config.underlay[0].keymap['quickLoad'] = QuickLoad()
         config.keymap['quickLoad'] = 'K_F5'

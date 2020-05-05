@@ -2,7 +2,7 @@
 # Config changes; written by UnRen
 
 init 999 python:
-# ### Skipping ###
+# ######### Skipping ######################
     _preferences.skip_unseen = True
     renpy.game.preferences.skip_unseen = True
     renpy.config.allow_skipping = True

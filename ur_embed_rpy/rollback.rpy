@@ -2,7 +2,7 @@
 # Config changes; written by UnRen
 
 init 999 python:
-# ### Rollback ###
+# ######### Rollback ######################
     renpy.config.rollback_enabled = True
     renpy.config.hard_rollback_limit = 256
     renpy.config.rollback_length = 256
