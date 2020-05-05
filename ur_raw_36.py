@@ -28,7 +28,7 @@ __title__ = 'UnRen'
 __license__ = 'Apache 2.0'
 __author__ = 'F95sam, madeddy'
 __status__ = 'Development'
-__version__ = '0.10.0-alpha'
+__version__ = '0.10.1-alpha'
 
 
 class UrP:
@@ -36,17 +36,13 @@ class UrP:
     shared location at script head."""
 
     _toolstream = "tool_placeholder"
-    console_code = """\
-    console_placeholder
+    console_code = """console_placeholder
     """
-    quick_code = """\
-    quick_placeholder
+    quick_code = """quick_placeholder
     """
-    rollback_code = """\
-    rollback_placeholder
+    rollback_code = """rollback_placeholder
     """
-    skip_code = """\
-    skip_placeholder
+    skip_code = """skip_placeholder
     """
 
 
@@ -134,10 +130,10 @@ class UnRen(UrP):
             # RenPy script file
             # Config changes; written by UnRen
 
-            init 999 python:
+            init 999 python:\
         """
         with outfile.open('w') as ofi:
-            print(textwrap.dedent(header_txt), file=ofi)
+            ofi.write(textwrap.dedent(header_txt))
 
     # IDEA: Rework write config functionality to less complexity, fewer methods...
     def write_rpy_cfg(self, cfg_code, cfg_inf):
