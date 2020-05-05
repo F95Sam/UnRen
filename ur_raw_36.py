@@ -28,7 +28,7 @@ __title__ = 'UnRen'
 __license__ = 'Apache 2.0'
 __author__ = 'F95sam, madeddy'
 __status__ = 'Development'
-__version__ = '0.10.1-alpha'
+__version__ = '0.11.0-alpha'
 
 
 class UrP:
@@ -214,9 +214,8 @@ class UnRen(UrP):
         while True:
             print(f"\n\n{UnRen.menu_screen}\n\n")
             userinp = input("Type the corresponding key character to the task you want to execute: ").lower()
-            # FIXME: keyerror on empty str (enter key)
-            if any(char not in UnRen.menu_opts.keys() for char in userinp):
-                self.inf(0, "\nInvalid key used. Try again.", m_sort='note')
+            if userinp not in UnRen.menu_opts.keys():
+                self.inf(0, "\x1b[42mInvalid\x1b[0m key used. Try again.")
                 continue
             break
         self.inf(1, f"Input is valid. Continuing with {UnRen.menu_opts[userinp]} ...")
