@@ -28,7 +28,7 @@ __title__ = 'UnRen'
 __license__ = 'Apache 2.0'
 __author__ = 'F95sam, madeddy'
 __status__ = 'Development'
-__version__ = '0.11.2-alpha'
+__version__ = '0.11.3-alpha'
 
 
 class UrP:
@@ -260,26 +260,28 @@ class UnRen(UrP):
         # python there must be changes in here
 
         script_dir = pt(__file__).resolve().parent if not self.in_pth else self.in_pth
-        # TODO: Abbility to drag & drop a folder in the terminal and get the path we
-        # work with. e.g
-        # script_dir = given_input
         # control print
         print(f"script {script_dir}")
         print(f"cwd {os.getcwd()}")
 
+        # TODO: Abbility to drag & drop a folder in the terminal and get the path we
+        # work with. e.g
+        # script_dir = given drag&drop input
+
         if script_dir.joinpath("lib").is_dir() and script_dir.joinpath("renpy").is_dir():
             self.base_pth = script_dir
             # control print
-            print(f"script_dir is base")
+            print(f"script_dir is base dir")
         elif script_dir.name == "game" and pt(script_dir).joinpath("cache").is_dir():
             self.base_pth = script_dir.parent
             # control print
-            print(f"script_dir is game")
+            print(f"script_dir is game dir")
         else:
-            raise FileNotFoundError(f"Unren is not located in the correct directory! \
-                                    Current dir is {script_dir}.")
+            raise FileNotFoundError(
+                "The given target path is incorrect or Unren is not located in the "
+                f"correct directory! Current dir is > {script_dir}.")
         # control print
-        print(f"script_dir: {script_dir}  -  BASE: {self.base_pth} type: {type(self.base_pth)}")
+        print(f"script_dir: {script_dir}  base: {self.base_pth}  type: {type(self.base_pth)}")
 
         self.game_pth = self.base_pth.joinpath("game")
 
