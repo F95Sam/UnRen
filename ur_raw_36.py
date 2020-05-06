@@ -10,8 +10,6 @@ Abbilitys are unpacking rpa files, decompiling rpyc(py2!) files and enabling res
 reactivating diverse RenPy functions by script commands.
 """
 
-# pylint: disable=c0103, c0301, c0415, w0511, w0106
-
 
 import os
 import sys
@@ -22,20 +20,21 @@ import tempfile
 import textwrap
 import pickle
 import base64
+from colorama import init
 
 
 __title__ = 'UnRen'
 __license__ = 'Apache 2.0'
 __author__ = 'F95sam, madeddy'
 __status__ = 'Development'
-__version__ = '0.11.3-alpha'
+__version__ = '0.12.0-alpha'
 
 
 class UrP:
     """This class exists so we can hold all the placeholder/embed vars in a
     shared location at script head."""
 
-    _toolstream = "tool_placeholder"
+    _toolstream = """tool_placeholder"""
     console_code = """console_placeholder
     """
     quick_code = """quick_placeholder
@@ -259,7 +258,9 @@ class UnRen(UrP):
         # NOTE: There should be better location checks. And if we use the batch/RenPy
         # python there must be changes in here
 
-        script_dir = pt(__file__).resolve().parent if not self.in_pth else self.in_pth
+        script_dir = pt(__file__).resolve(strict=True).parent if not self.in_pth \
+            else self.in_pth.resolve(strict=True)
+
         # control print
         print(f"script {script_dir}")
         print(f"cwd {os.getcwd()}")
@@ -279,7 +280,7 @@ class UnRen(UrP):
         else:
             raise FileNotFoundError(
                 "The given target path is incorrect or Unren is not located in the "
-                f"correct directory! Current dir is > {script_dir}.")
+                f"correct directory! Current dir is: > {script_dir}")
         # control print
         print(f"script_dir: {script_dir}  base: {self.base_pth}  type: {type(self.base_pth)}")
 
@@ -310,7 +311,8 @@ def ur_main(cfg):
     """
     if not sys.version_info[:2] >= (3, 6):
         raise Exception("Must be executed in Python 3.6 or later.\n"
-                        f"You are running {sys.version}")
+                        "You are running {}".format(sys.version))
+    init(autoreset=True)
 
     _ur = UnRen(target=cfg.targetpath, verbose=cfg.verbose)
 
