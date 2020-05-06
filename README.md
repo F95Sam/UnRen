@@ -49,11 +49,11 @@ python2 unren_py27.py ../your_path/game_name/
 ```
 
 #### RenPy python
-To use the Python which came with your game, the corresponding system architecture
-must be selected in the lib folder. Also if more as one OS available is the correct
-OS directory must be considered.
-e.g.
-For **64** Bit on **Linux** and with a Python **3** game:
+To use the Python distribution which came along your game, the corresponding system
+architecture must be selected in the lib folder. Also, if more as one OS available is
+the correct OS directory must be considered.
+e.g. 
+To use **64** Bit on **Linux** and with a Python **3** game:
 ```
 ../your_path/game_name/lib/linux-x86_64/python -EOO unren_py37.py ../your_path/game_name/
 ```
@@ -79,19 +79,18 @@ want to use one-click start for the app.
 `unren_build.py`  
 A helper script who constructs the final release versions from different source
 files.
-- _(TODO)_ Step 1: Writes the rpy snippeds in the python script files.
-- Step 2: Converts the tools to a bytestream and embeds it in the unren python
-script(+ pickled and base coded)
-- Step 3 (optional, just win): Writes the UnRen python script from previous steps
-in the batch file. 
+- Step 1: Collects the rpy snippeds and embeds them in the raw python script. Converts
+also the tools to a bytestream and embeds them also(+ pickled and base coded).
+- Step 2 (optional, just windows): Writes the previously prepaired UnRen python
+script in the batch file. 
 _In progress_
 
-`unren_base.cmd`  
+`ur_base.cmd`  
 This Windows command file is planed as the one-click starter for the python main
 app. The python code will be embeded so we get a hybrid file.
 _Completed_
 
-`unren_py36_embed.py` / `unren_py27_embed.py`  
+`ur_embed_36.py` / `ur_embed_27.py`  
 The reduced version of the UnRen(py3.6+ / py2.7) for embedding in the batch
 script.
 _Not started_
@@ -101,7 +100,7 @@ Contains actual versions of the used third party tools which will be embeddet in
 the python script.
 _Completed_
 
-`rpy_embeds/*`  
+`ur_embed_rpy/*`  
 The RenPy snippeds with code which will be embeddet in the python script. Also
 separately usable by copying simply in the game directory.
 _Completed_
