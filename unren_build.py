@@ -24,7 +24,7 @@ __title__ = 'UnRen builder'
 __license__ = 'Apache-2'
 __author__ = 'madeddy'
 __status__ = 'Development'
-__version__ = '0.12.1-alpha'
+__version__ = '0.13.0-alpha'
 
 
 import os
@@ -188,10 +188,10 @@ def build_main(cfg):
     """This executes all program steps."""
     if not sys.version_info[:2] >= (3, 6):
         raise Exception("Must be executed in Python 3.6 or later.\n"
-                        f"You are running {sys.version}")
+                        "You are running {}".format(sys.version))
 
     urb = UrBuild()
-    # Step 1a & 1b  embed rpy cfg & tools in the raw py files
+    # Step 1 embed rpy cfg & tools in the raw py files
     if cfg.task == 'part_1':
         urb.embed2py()
         print("\nUnRen builder:>> Embed `snippeds and tools in py` task completed!\n")
