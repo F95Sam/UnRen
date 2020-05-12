@@ -19,6 +19,7 @@ The features offered include:
  - Rollback function
  - Text skipping
 
+This project adheres to [Semantic Versioning](https://semver.org).
 
 ## Usage
 ### Console command version for win
