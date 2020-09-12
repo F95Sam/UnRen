@@ -23,6 +23,8 @@ lib64/
 env/
 venv/
 
+### VS Code ###
+.vscode/
 
 ### Linux ###
 *~
