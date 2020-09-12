@@ -68,24 +68,15 @@ REM Note: 'if/else/else if' would be nice, but make just problems in batch
 REM --------------------------------------------------------------------------------
 set err=0
 set err_msg="Unknown reason..."
-set currentdir=%~dp0
-
 if exist "game" if exist "lib" if exist "renpy" (
-	set "pythondir=%currentdir%lib\windows-i686\"
-	set "renpydir=%currentdir%renpy\"
-	set "gamedir=%currentdir%game\"
+	set "pythondir=lib\windows-i686\"
+	set "renpydir=renpy\"
+	set "gamedir=game\"
 	goto :path_ok
 )
 
-if exist "..\game" if exist "..\lib" if exist "..\renpy" (
-	set "pythondir=%currentdir%..\lib\windows-i686\"
-	set "renpydir=%currentdir%..\renpy\"
-	set gamedir=%currentdir%
-	goto :path_ok
-)
-
-echo    ! Error: The location of UnRen appears to be wrong. It should
-echo             be in the game's root directory.
+echo    ! Error: The current directory appears to be wrong.
+echo             You should run this in the game's root directory.
 echo             (dirs 'game', 'lib', 'renpy' are present)
 echo/
 goto :error
@@ -138,7 +129,7 @@ REM ----------------------------------------------------------------------------
 REM Write _rpatool.py from our base64 strings
 REM --------------------------------------------------------------------------------
 :extract
-set "rpatool=%currentdir%_rpatool.py"
+set "rpatool=_rpatool.py"
 echo/
 echo   Creating rpatool...
 if exist "%rpatool%.tmp" (
@@ -171,11 +162,12 @@ REM Unpack RPA
 REM --------------------------------------------------------------------------------
 echo/
 echo   Searching for RPA packages
-cd "%gamedir%"
+pushd "%gamedir%"
 for %%f in (*.rpa) do (
 	echo    + Unpacking "%%~nf%%~xf" - %%~zf bytes
-	"%pythondir%python.exe" -O "%rpatool%" -x "%%f"
+	"..\%pythondir%python.exe" -O "..\%rpatool%" -x "%%f"
 )
+popd
 
 REM --------------------------------------------------------------------------------
 REM Clean up
@@ -244,13 +236,14 @@ REM Decompile rpyc files
 REM --------------------------------------------------------------------------------
 echo/
 echo   Searching for rpyc files...
-cd "%gamedir%"
+pushd "%gamedir%"
 for /r %%f in (*.rpyc) do (
 	if not %%~nf == un (
 		echo    + Decompiling "%%~nf%%~xf" - %%~zf bytes
-		"%pythondir%python.exe" -O "%unrpycpy%" "%%f"
+		"..\%pythondir%python.exe" -O "..\%unrpycpy%" "%%f"
 	)
 )
+popd
 
 REM --------------------------------------------------------------------------------
 REM Clean up
