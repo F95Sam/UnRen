@@ -1,4 +1,9 @@
 # Dev branch
+
+> [!WARNING]
+> This repo is extremely out of date and not maintained for the foreseeable future. Don't open
+any pull-requests or issue reports.
+
 At the moment **this is the development branch** for the python rewrite of the
 _UnRen application._
 > **Do not use for productive work!**
